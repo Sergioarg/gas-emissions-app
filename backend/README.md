@@ -1,16 +1,16 @@
-# Loans API Documentation
+# Gas Emissions API Documentation
 
 ## Overview
 
-This documentation outlines how to set up and use the Loans API, a Django backend designed for secure and efficient management of customer and loan data.
+This documentation outlines how to set up and use the Gas Emissions API, a Django backend designed for secure and efficient management of greenhouse gas emissions data. The API follows Domain-Driven Design (DDD) principles and provides comprehensive filtering capabilities.
 
 ## API Endpoints
 
-The API is structured around the following endpoints:
+The API provides read-only access to emissions data with advanced filtering capabilities:
 
-### Authentication
+### Emissions Management
 
-- **Obtain Token Pair**: `POST /api/token-auth/` - Obtain an access token pair.
+- **List Emissions**: `GET /api/emissions/` - Retrieve emissions with optional filtering
 
 ## Getting Started
 
@@ -19,16 +19,17 @@ The API is structured around the following endpoints:
 - Python 3.10.0 or higher
 - Django 5.0.6 or higher
 - Django REST framework 3.15.1 or higher
+- pytest (for testing)
 
 ### Installation
 
 1. Clone the repository:
     ```
-    git clone https://github.com/Sergioarg/loans_api.git
+    git clone <repository-url>
     ```
-2. Navigate to the project directory:
+2. Navigate to the backend directory:
    ```
-   cd users_api/
+   cd gas-emissions-api/backend
    ```
 3. Create a virtual environment (optional but recommended):
    ```
@@ -45,15 +46,15 @@ The API is structured around the following endpoints:
      ```
 5. Install the required packages:
    ```
-   pip3 install -r requirements.txt
+   pip install -r requirements.txt
    ```
 6. Apply migrations to set up the database:
    ```
-   python3 manage.py migrate
+   python manage.py migrate
    ```
-7. Create an admin user:
+7. (Optional) Load sample data:
    ```
-    python3 manage.py createsuperuser --username admin --email admin@example.com
+   python manage.py loaddata emissions/fixtures/sample_emissions.json
    ```
 
 ## Running the Server
@@ -70,206 +71,198 @@ The server will start at `http://localhost:8000`.
 
 To interact with the API, you can use tools like `curl`, Postman, or any HTTP client library in your preferred programming language.
 
-Endpoint: `http://127.0.0.1:8000/api/token-auth/`
+### Emissions Endpoint
 
-- **Obtain API Token**
-  - **Endpoint**: `/api/token-auth/`
-  - **Method**: `POST`
-  - **Body**:
-    ```json
+**Base URL**: `http://127.0.0.1:8000/api/emissions/`
+
+#### List Emissions with Filtering
+
+- **Endpoint**: `/api/emissions/`
+- **Method**: `GET`
+- **Description**: Retrieve emissions data with optional filtering
+- **Query Parameters**:
+  - `country` (string): Filter by country name (e.g., "México", "Brasil")
+  - `activity` (string): Filter by activity type (e.g., "Transporte", "Industria")
+  - `emission_type` (string): Filter by emission type (e.g., "CO2", "CH4")
+- **Response**: Array of emission objects
+- **Example Response**:
+  ```json
+  [
     {
-      "username": "exampleuser",
-      "password": "examplepassword"
+      "id": 1,
+      "year": 2023,
+      "emissions": 150.5,
+      "emission_type": "CO2",
+      "country": "México",
+      "activity": "Transporte",
+      "created_at": "2023-11-22T12:00:00Z"
     }
-    ```
-  - **Response**:
-    ```json
-    {
-      "token": "API-TOKEN"
-    }
-    ```
+  ]
+  ```
 
 ## Accessing the API Endpoints
 
 Once the application is running, you can access the API endpoints using a web browser or a tool like `curl` or Postman.
 
-- Curl Example:
+### API Usage Examples
 
+#### Get All Emissions
 ```bash
-  curl --location --request GET 'http://127.0.0.1:8000/api/customers/' \
-  --header 'Content-Type: application/json' \
-  --header 'Authorization: Token <YOUR_TOKEN>'
+curl -X GET "http://127.0.0.1:8000/api/emissions/" \
+     -H "Content-Type: application/json"
 ```
 
-### Customers Management
+#### Filter by Country
+```bash
+curl -X GET "http://127.0.0.1:8000/api/emissions/?country=México" \
+     -H "Content-Type: application/json"
+```
 
-<details>
-  <summary>Table of methods</summary>
-  <table>
-  <thead>
-    <tr>
-      <th>Endpoint</th>
-      <th>Method</th>
-      <th>Description</th>
-      <th>Response</th>
-      <th>Request Body</th>
-      <th>Parameters</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>/api/customers/</td>
-      <td>GET</td>
-      <td>Retrieves a list of all customers.</td>
-      <td>An array of <code>Customer</code> objects.</td>
-      <td>N/A</td>
-      <td>N/A</td>
-    </tr>
-    <tr>
-      <td>/api/customers/{id}/</td>
-      <td>GET</td>
-      <td>Retrieves a specific customer by their ID.</td>
-      <td>A <code>Customer</code> object or <code>404 Not Found</code> if the customer does not exist.</td>
-      <td>N/A</td>
-      <td><code>id</code>: The ID of the customer.</td>
-    </tr>
-    <tr>
-      <td>/api/customers/{id}/balance</td>
-      <td>GET</td>
-      <td>Retrieves the balance of the customer by their ID.</td>
-      <td>Balance of the customer</td>
-      <td>N/A</td>
-      <td><code>id</code>: The ID of the customer.</td>
-    </tr>
-    <tr>
-      <td>/api/customers/{id}/loans</td>
-      <td>GET</td>
-      <td>Retrieves the loans of the customer by their ID.</td>
-      <td>Array of loans</td>
-      <td>N/A</td>
-      <td><code>id</code>: The ID of the customer.</td>
-    </tr>
-    <tr>
-      <td>/api/customers/{id}/payments</td>
-      <td>GET</td>
-      <td>Retrieves the payments of the customer by their ID.</td>
-      <td>Array of payments</td>
-      <td>N/A</td>
-      <td><code>id</code>: The ID of the customer.</td>
-    </tr>
-    <tr>
-      <td>/api/customers/</td>
-      <td>POST</td>
-      <td>Creates a new customer.</td>
-      <td><code>201 Created</code> with the created <code>Customer</code> object and the location of the new resource.</td>
-      <td>A <code>Customer</code> object.</td>
-      <td>N/A</td>
-    </tr>
-    <tr>
-      <td>/api/customers/{id}/</td>
-      <td>PUT</td>
-      <td>Updates an existing customer.</td>
-      <td><code>204 No Content</code> if the update is successful, or <code>404 Not Found</code> if the customer does not exist.</td>
-      <td>A <code>Customer</code> object with the fields to update.</td>
-      <td><code>id</code>: The ID of the customer to update.</td>
-    </tr>
-    <tr>
-      <td>/api/customers/{id}/</td>
-      <td>DELETE</td>
-      <td>Deletes a specific customer by their ID.</td>
-      <td><code>200 OK</code> if the deletion is successful, or <code>404 Not Found</code> if the customer does not exist.</td>
-      <td>N/A</td>
-      <td><code>id</code>: The ID of the customer to delete.</td>
-    </tr>
-  </tbody>
-</table>
-</details>
+#### Filter by Activity
+```bash
+curl -X GET "http://127.0.0.1:8000/api/emissions/?activity=Transporte" \
+     -H "Content-Type: application/json"
+```
 
-Endpoint: `http://127.0.0.1:8000/api/customers/`
+#### Filter by Emission Type
+```bash
+curl -X GET "http://127.0.0.1:8000/api/emissions/?emission_type=CO2" \
+     -H "Content-Type: application/json"
+```
 
-- **Create a Customer**
-  - **Endpoint**: `/api/customers/`
-  - **Method**: `POST`
-  - **Body**:
-    ```json
+#### Multiple Filters
+```bash
+curl -X GET "http://127.0.0.1:8000/api/emissions/?country=Brasil&emission_type=CH4" \
+     -H "Content-Type: application/json"
+```
+
+### Response Format
+
+All endpoints return data in the following format:
+
+```json
+{
+  "count": 25,
+  "results": [
     {
-      "score": 6000,
-      "external_id": "customer_01"
+      "id": 1,
+      "year": 2023,
+      "emissions": 150.5,
+      "emission_type": "CO2",
+      "country": "México",
+      "activity": "Transporte",
+      "created_at": "2023-11-22T12:00:00Z"
     }
-    ```
-  - **Response**:
-    ```json
-    {
-      "score": "6000.00",
-      "status": 1,
-      "external_id": "customer_01",
-      "preapproved_at": null
-    }
-    ```
+  ]
+}
+```
 
-### Loan Management
+### Available Filter Values
 
-Endpoint: `http://127.0.0.1:8000/api/loans/`
+#### Countries (Nombres completos)
+- México
+- Brasil
+- Argentina
+- Colombia
+- Perú
+- Chile
+- Ecuador
+- Uruguay
 
-- **Create a Loan**
-  - **Endpoint**: `/api/loans/`
-  - **Method**: `POST`
-  - **Body**:
-    ```json
-    {
-      "amount": 4000,
-      "external_id": "loan_01",
-      "customer": 1
-    }
-    ```
-  - **Response**:
-    ```json
-    {
-      "external_id": "loan_01",
-      "amount": "4000.00",
-      "status": 1,
-      "outstanding": "4000.00",
-      "customer_external_id": "customer_01"
-    }
-    ```
-### Payment Management
+#### Activities (Actividades)
+- Transporte
+- Industria
+- Agricultura
+- Energía
+- Manufactura
+- Minería
+- Residuos
+- Deforestación
+- Producción de cemento
+- Quema de combustibles
 
-- **Endpoint**: `http://127.0.0.1:8000/api/payments/`
+#### Emission Types (Tipos de Emisión)
+- CO2 (Dióxido de Carbono)
+- CH4 (Metano)
+- N2O (Óxido Nitroso)
+- SF6 (Hexafluoruro de Azufre)
 
-- **Create a Payment**
-  - **Endpoint**: `/api/payments/`
-  - **Method**: `POST`
-  - **Body**:
-    ```json
-      {
-        "total_amount": 2000,
-        "external_id": "payment_01",
-        "customer": 1,
-        "payment_loan_detail": [
-            {"loan": 1, "amount": 2000},
-        ]
-      }
-    ```
-  - **Response**:
-    ```json
-    {
-      "total_amount": "2000",
-      "status": 4,
-      "paid_at": "2024-05-11T23:34:29.703632Z",
-      "external_id": "payment_01",
-      "customer_external_id": "customer_01",
-      "loan_external_id": "loan_01",
-      "payment_amount": 2000.0
-    }
-    ```
+## Testing
 
-### Run Tests
-Execute the Django test runner to run all tests in the project.
+The project includes comprehensive tests covering all layers of the DDD architecture.
+
+### Run Tests with pytest
 
 ```bash
-python3 manage.py test
-```
-### Model ER
-This is the ER diagram of the project.
+# Run all tests
+python -m pytest emissions/tests.py -v
 
-<img src="imgs/Loans_ER.png" alt="Diagram ER" width="500" height="400">
+# Run with coverage report
+python -m pytest emissions/tests.py --cov=emissions --cov-report=html
+
+# Run specific test categories
+python -m pytest emissions/tests.py::TestCountryValueObject -v  # Domain tests
+python -m pytest emissions/tests.py::TestEmissionAPI -v        # API tests
+```
+
+### Test Coverage
+
+The test suite covers:
+
+- **Domain Layer**: Value Objects, Entities, and business rules
+- **Application Layer**: Use cases and service orchestration
+- **Infrastructure Layer**: Repository implementations and data access
+- **Presentation Layer**: API endpoints, serialization, and filtering
+
+## Architecture
+
+This API follows **Domain-Driven Design (DDD)** principles with clean architecture:
+
+```
+📁 emissions/
+├── 📁 domain/           # Domain Layer
+│   ├── emission.py      # Domain Entity
+│   └── repository.py    # Repository Interface
+├── 📁 app/             # Application Layer
+│   └── service.py      # Application Services
+├── 📁 infrastructure/  # Infrastructure Layer
+│   └── django_emission_repository.py  # Repository Implementation
+├── 📁 value_objects.py # Domain Value Objects
+├── 📁 serializers.py   # Presentation Serializers
+├── 📁 views.py         # API Controllers
+├── 📁 helpers.py       # Filtering Logic
+└── 📁 tests.py         # Comprehensive Tests
+```
+
+### Key Design Patterns
+
+- **Repository Pattern**: Abstract data access
+- **Value Objects**: Immutable domain objects
+- **Application Services**: Use case orchestration
+- **Clean Architecture**: Dependency inversion
+
+## Data Model
+
+### Emission Entity
+
+| Field | Type | Description |
+|-------|------|-------------|
+| id | Integer | Primary key |
+| year | Integer | Year of emission |
+| emissions | Decimal | Emission amount (tons) |
+| emission_type | String | Type of greenhouse gas |
+| country | String | Country name (full name) |
+| activity | String | Economic activity sector |
+| created_at | DateTime | Record creation timestamp |
+
+### Supported Countries
+
+The API includes data for Latin American countries:
+- México, Brasil, Argentina, Colombia, Perú, Chile, Ecuador, Uruguay
+
+### Supported Emission Types
+
+- **CO2**: Carbon Dioxide
+- **CH4**: Methane
+- **N2O**: Nitrous Oxide
+- **SF6**: Sulfur Hexafluoride
