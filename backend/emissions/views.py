@@ -1,38 +1,28 @@
-"""Module EmissionViewSet"""
-
+# Django REST Framework
 from rest_framework import viewsets
-from emissions.models import Emission
+
+# Internal
+from emissions.app.service import EmissionApplicationService
+from emissions.infrastructure.django_emission_repository import (
+    DjangoEmissionRepository
+)
+from emissions.models import Emission as DjangoEmission
 from emissions.serializers import EmissionSerializer
+from emissions.helpers import get_filtered_emissions
+from rest_framework.response import Response
 
 
-class EmissionViewSet(viewsets.ModelViewSet):
-    """Emission ViewSet with filtering capabilities"""
+class EmissionViewSet(viewsets.ReadOnlyModelViewSet):
 
-    queryset = Emission.objects.all().order_by("id")
+    queryset = DjangoEmission.objects.none()
     serializer_class = EmissionSerializer
 
-    def get_queryset(self):
-        """
-        Optionally filter emissions by query parameters:
-        - ?country=<country_name>
-        - ?activity=<activity_name>
-        - ?emission_type=<emission_type>
-        """
-        queryset = Emission.objects.all().order_by("id")
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        repository = DjangoEmissionRepository()
+        self.service = EmissionApplicationService(repository)
 
-        # Filter by country
-        country = self.request.query_params.get('country', None)
-        if country is not None:
-            queryset = queryset.filter(country__icontains=country)
-
-        # Filter by activity
-        activity = self.request.query_params.get('activity', None)
-        if activity is not None:
-            queryset = queryset.filter(activity__icontains=activity)
-
-        # Filter by emission type
-        emission_type = self.request.query_params.get('emission_type', None)
-        if emission_type is not None:
-            queryset = queryset.filter(emission_type__icontains=emission_type)
-
-        return queryset
+    def list(self, request):
+        """GET /api/emissions/ """
+        emissions = get_filtered_emissions(self, request)
+        return Response(self.get_serializer(emissions, many=True).data)

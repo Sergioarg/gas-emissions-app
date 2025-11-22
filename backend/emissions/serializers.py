@@ -1,8 +1,10 @@
 from rest_framework import serializers
-from emissions.models import Emission
 
 
-class EmissionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Emission
-        fields = "__all__"
+class EmissionSerializer(serializers.Serializer):
+
+    year = serializers.IntegerField()
+    emissions = serializers.FloatField()
+    emission_type = serializers.CharField()
+    country = serializers.CharField(source='country.name')
+    activity = serializers.CharField()
