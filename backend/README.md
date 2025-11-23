@@ -164,9 +164,6 @@ The API supports filtering by full country names. Sample data includes:
 - Germany, France, Italy, Spain, Netherlands, Sweden, Norway, Denmark, Finland
 - Belgium, Austria, Switzerland, Ireland, Portugal, Poland, Czech Republic, Greece, Hungary
 
-**Latin American countries:**
-- Mexico, Brazil, Argentina, Colombia, Peru, Chile, Ecuador, Uruguay
-
 #### Activities (Economic Sectors)
 - Transportation
 - Agriculture
@@ -191,9 +188,29 @@ The project includes comprehensive tests covering all layers of the DDD architec
 
 ### Run Tests with pytest
 
+#### Run All Tests
+
 ```bash
 # Run all tests
-python manage.py test
+pytest
+
+# Run all tests with verbose output
+pytest -v
+
+# Run all tests with detailed output
+pytest -vv
+```
+
+#### Run Specific Test Classes or Methods
+
+```bash
+
+# Run specific file
+pytest emissions/tests/test_api.py
+
+# Run tests matching a pattern
+pytest -k "TestEmissionQueryParamSerializer" -v --no-cov
+
 ```
 
 ### Test Coverage
@@ -204,6 +221,27 @@ The test suite covers:
 - **Application Layer**: Use cases and service orchestration
 - **Infrastructure Layer**: Repository implementations and data access
 - **Presentation Layer**: API endpoints, serialization, and filtering
+
+<!-- #### Generate Coverage Report
+
+```bash
+# Generate HTML coverage report
+pytest --cov=emissions --cov-report=html
+
+# View coverage report
+open htmlcov/index.html  # macOS
+xdg-open htmlcov/index.html  # Linux -->
+```
+
+### Test Structure
+
+```
+emissions/tests/
+├── conftest.py          # Shared fixtures and helpers
+├── test_api.py          # API endpoint tests
+```
+<!-- ├── test_serializers.py  # Serializer validation tests
+└── test_helpers.py      # Helper function tests -->
 
 ## Architecture
 

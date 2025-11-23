@@ -1,34 +1,55 @@
 # Internal
 from rest_framework.serializers import ValidationError
+# TODO: Refactorizar ESTE ARCHIVO
+
+
+# Esta funcion se esta utilizando en muchos lugares (así no debe ser)
+def split_comma_separated_values(value: str) -> list[str]:
+    return [v.strip() for v in value.split(',') if v.strip()]
+
+
+class CommaSeparatedFilter:
+    @staticmethod
+    def filter_in(emissions: list, field_name: str, values: list[str]) -> list:
+        if not values:
+            return emissions
+
+        filtered = []
+        for emission in emissions:
+            field_value = getattr(emission, field_name, None)
+            if field_value:
+                # Case-insensitive matching
+                if any(
+                    val.lower() in str(field_value).lower()
+                    for val in values
+                ):
+                    filtered.append(emission)
+        return filtered
 
 
 def get_filtered_emissions(emissions, request):
     filter_actions = {
-        'country': lambda emissions, values: [
-            e for e in emissions
-            if any(val.lower() in e.country.name.lower() for val in values)
-        ],
-        'activity': lambda emissions, values: [
-            e for e in emissions
-            if any(val.lower() in e.activity.lower() for val in values)
-        ],
-        'emission_type': lambda emissions, value: [
-            e for e in emissions
-            if e.emission_type == value
-        ],
+        'country': lambda emissions, values:
+        CommaSeparatedFilter.filter_in(
+            emissions, 'country', values
+        ),
+        'activity': lambda emissions, values:
+        CommaSeparatedFilter.filter_in(
+            emissions, 'activity', values
+        ),
+        'emission_type': lambda emissions, values:
+        CommaSeparatedFilter.filter_in(
+            emissions, 'emission_type', values
+        ),
     }
 
-    emissions = emissions.service.get_all_emissions()
+    emissions = emissions.service.get_all()
 
     for param, filter_func in filter_actions.items():
         param_value = request.query_params.get(param)
         if param_value and param_value.strip():
-            # Si es country o activity, separar por comas
-            if param in ['country', 'activity']:
-                values = [v.strip() for v in param_value.split(',')]
-                emissions = filter_func(emissions, values)
-            else:
-                emissions = filter_func(emissions, param_value)
+            values = split_comma_separated_values(param_value)
+            emissions = filter_func(emissions, values)
 
     return emissions
 
@@ -37,7 +58,7 @@ def validate_non_str_and_multiple_values(value: str) -> str:
     if not value or not value.strip():
         raise ValidationError("Cannot be empty")
 
-    values = [v.strip() for v in value.split(',')]
+    values = split_comma_separated_values(value)
 
     for val in values:
         if not val:

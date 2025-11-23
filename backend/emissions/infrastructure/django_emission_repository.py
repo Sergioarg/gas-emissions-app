@@ -22,7 +22,7 @@ class DjangoEmissionRepository(EmissionRepositoryInterface):
         django_emissions = DjangoEmission.objects.filter(activity=activity)
         return self._convert_to_domain(django_emissions)
 
-    def find_by_type(self, emission_type: str) -> list[Emission]:
+    def find_by_emissions_type(self, emission_type: str) -> list[Emission]:
         django_emissions = DjangoEmission.objects.filter(
             emission_type=emission_type
         )
