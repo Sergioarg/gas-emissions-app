@@ -10,4 +10,4 @@ class Emission(models.Model):
     activity = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.emission_type
+        return f"{self.emission_type} - {self.country} ({self.year})"

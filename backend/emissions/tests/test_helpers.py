@@ -1,8 +1,9 @@
 import pytest
-from rest_framework.serializers import ValidationError
-
+# Internal
 from emissions.helpers.query_parser import QueryParamParser
 from emissions.helpers.validators import QueryParamValidator
+# DRF
+from rest_framework.serializers import ValidationError
 
 
 class TestQueryParamParser:
@@ -41,4 +42,4 @@ class TestQueryParamValidator:
                 "Japan, 123"
             )
         except ValidationError as e:
-            assert str(e.detail[0]) == "Cannot be numeric"
+            assert str(e.detail[0]) == "Does not support numeric values"

@@ -1,8 +1,8 @@
 import pytest
-from rest_framework import status
-
-# Helpers
+# Internal
 from emissions.tests.conftest import extract_and_normalize_field
+# DRF
+from rest_framework import status
 
 
 @pytest.mark.django_db
@@ -128,9 +128,3 @@ class TestEmissionAPI:
         response = api_client.get(f"{self.BASE_URL}?{param}={value}")
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "error" in response.data
-
-    # TODO: Check test for invalid country empty
-    # def test_filter_invalid_country_empty(self, api_client):
-    #     response = api_client.get(f"{self.BASE_URL}?country=")
-    #     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    #     assert "error" in response.data

@@ -1,18 +1,16 @@
-# Django REST Framework
-from rest_framework import status, viewsets
-from rest_framework.exceptions import ValidationError
-from rest_framework.response import Response
-
 # Internal
 from emissions.app.service import EmissionApplicationService
-from emissions.helpers.service import get_filtered_emissions
-from emissions.infrastructure.django_repository import \
-    DjangoEmissionRepository
+from emissions.infrastructure.django_repository import DjangoEmissionRepository
 from emissions.models import Emission as DjangoEmission
 from emissions.serializers import (
     EmissionQueryParamSerializer,
     EmissionSerializer,
 )
+# DRF
+from rest_framework import status, viewsets
+from rest_framework.exceptions import ValidationError
+from rest_framework.request import Request
+from rest_framework.response import Response
 
 
 class EmissionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -25,6 +23,13 @@ class EmissionViewSet(viewsets.ReadOnlyModelViewSet):
         repository = DjangoEmissionRepository()
         self.service = EmissionApplicationService(repository)
 
+    def __get_query_params_dict(self, request: Request) -> dict[str, str]:
+        """Get query parameters as a dictionary."""
+        return {
+            key: value[0] if isinstance(value, list) else value
+            for key, value in request.query_params.items()
+        }
+
     def list(self, request):
         """GET /api/emissions/ """
         try:
@@ -32,7 +37,10 @@ class EmissionViewSet(viewsets.ReadOnlyModelViewSet):
                 data=request.query_params
             )
             query_serializer.is_valid(raise_exception=True)
-            emissions = get_filtered_emissions(self, request)
+
+            query_params_dict = self.__get_query_params_dict(request)
+
+            emissions = self.service.get_filtered(query_params_dict)
 
             serializer = self.get_serializer(emissions, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)

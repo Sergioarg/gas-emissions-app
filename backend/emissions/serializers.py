@@ -1,8 +1,7 @@
-# Django REST Framework
-from rest_framework import serializers
-
 # Internal
 from emissions.helpers.validators import QueryParamValidator
+# DRF
+from rest_framework import serializers
 
 
 class EmissionSerializer(serializers.Serializer):
@@ -27,8 +26,3 @@ class EmissionQueryParamSerializer(serializers.Serializer):
         required=False,
         max_length=24
     )
-
-    def validate_query_params(self, query_params):
-        serializer = EmissionQueryParamSerializer(data=query_params)
-        serializer.is_valid(raise_exception=True)
-        return serializer.validated_data

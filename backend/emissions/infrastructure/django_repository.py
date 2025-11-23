@@ -1,11 +1,18 @@
-from emissions.domain.emission import Emission
-from emissions.domain.repository import EmissionRepositoryInterface
+# Standard Library
+from typing import List
 
+# Django
+from django.db.models import Q
+
+# Internal
+from emissions.domain.repository import EmissionRepositoryInterface
+from emissions.domain.emission import Emission
 from emissions.models import Emission as DjangoEmission
 
 
 class DjangoEmissionRepository(EmissionRepositoryInterface):
     """Repository for Django emissions."""
+
     def find_all(self) -> list[Emission]:
         django_emissions = DjangoEmission.objects.all()
         return self._convert_to_domain(django_emissions)
@@ -14,19 +21,31 @@ class DjangoEmissionRepository(EmissionRepositoryInterface):
         django_emission = DjangoEmission.objects.get(id=emission_id)
         return self._to_domain(django_emission)
 
-    def find_by_country(self, country_code: str) -> list[Emission]:
-        django_emissions = DjangoEmission.objects.filter(country=country_code)
-        return self._convert_to_domain(django_emissions)
+    def find_filtered(
+        self,
+        countries: List[str] = None,
+        activities: List[str] = None,
+        emission_types: List[str] = None
+    ) -> list[Emission]:
+        """Find emissions with multiple filters applied at DB level."""
+        queryset = DjangoEmission.objects.all()
 
-    def find_by_activity(self, activity: str) -> list[Emission]:
-        django_emissions = DjangoEmission.objects.filter(activity=activity)
-        return self._convert_to_domain(django_emissions)
+        if countries:
+            country_q = Q()
+            for country in countries:
+                country_q |= Q(country__icontains=country)
+            queryset = queryset.filter(country_q)
 
-    def find_by_emissions_type(self, emission_type: str) -> list[Emission]:
-        django_emissions = DjangoEmission.objects.filter(
-            emission_type=emission_type
-        )
-        return self._convert_to_domain(django_emissions)
+        if activities:
+            activity_q = Q()
+            for activity in activities:
+                activity_q |= Q(activity__icontains=activity)
+            queryset = queryset.filter(activity_q)
+
+        if emission_types:
+            queryset = queryset.filter(emission_type__in=emission_types)
+
+        return self._convert_to_domain(list(queryset))
 
     def _to_domain(self, django_emission: DjangoEmission) -> Emission:
         return Emission(

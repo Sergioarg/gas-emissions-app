@@ -1,7 +1,7 @@
 import pytest
+from emissions.helpers.query_parser import QueryParamParser
 from emissions.models import Emission
 from rest_framework.test import APIClient
-from emissions.helpers.query_parser import QueryParamParser
 
 
 @pytest.fixture
@@ -11,7 +11,7 @@ def api_client():
 
 @pytest.fixture
 def sample_emissions():
-    """Fixture con datos iniciales para todos los tests"""
+    """Base fixture for emissions."""
     emissions = [
         Emission.objects.create(
             year=2020,
@@ -47,7 +47,7 @@ def sample_emissions():
 
 @pytest.fixture
 def single_emission():
-    """Fixture con un solo registro para tests específicos"""
+    """Single emission fixture."""
     return Emission.objects.create(
         year=2023,
         emissions=300.0,
@@ -62,7 +62,7 @@ def extract_and_normalize_field(
     field_name: str,
     field_value: str
 ) -> tuple[list[str], list[str]]:
-    """Extract values from a field in the response data"""
+    """Extract and normalize field values from the response data."""
     response_values = [item.get(field_name) for item in response_data]
     query_params_values = QueryParamParser.parse_comma_separated(
         field_value
