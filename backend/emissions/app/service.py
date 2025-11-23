@@ -15,8 +15,8 @@ class EmissionApplicationService:
     def get_all_emissions(self) -> list[Emission]:
         return self.repository.find_all()
 
-    def get_emissions_by_country(self, country_code: str) -> list[Emission]:
-        return self.repository.find_by_country(country_code)
+    def get_emissions_by_country(self, country_name: str) -> list[Emission]:
+        return self.repository.find_by_country(country_name)
 
     def get_emissions_by_activity(self, activity: str) -> list[Emission]:
         return self.repository.find_by_activity(activity)

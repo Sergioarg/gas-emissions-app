@@ -17,7 +17,7 @@ class EmissionRepositoryInterface(ABC):
         pass
 
     @abstractmethod
-    def find_by_country(self, country_code: str) -> List[Emission]:
+    def find_by_country(self, country_name: str) -> List[Emission]:
         pass
 
     @abstractmethod
