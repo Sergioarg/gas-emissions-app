@@ -5,7 +5,7 @@ from emissions.models import Emission as DjangoEmission
 
 
 class DjangoEmissionRepository(EmissionRepositoryInterface):
-
+    """Repository for Django emissions."""
     def find_all(self) -> list[Emission]:
         django_emissions = DjangoEmission.objects.all()
         return self._convert_to_domain(django_emissions)

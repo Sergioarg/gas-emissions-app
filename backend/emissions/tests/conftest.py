@@ -1,6 +1,7 @@
 import pytest
 from emissions.models import Emission
 from rest_framework.test import APIClient
+from emissions.helpers.query_parser import QueryParamParser
 
 
 @pytest.fixture
@@ -56,10 +57,15 @@ def single_emission():
     )
 
 
-def extract_field_from_response_data(
+def extract_and_normalize_field(
     response_data: list[dict],
-    field_name: str
-) -> list[str]:
+    field_name: str,
+    field_value: str
+) -> tuple[list[str], list[str]]:
     """Extract values from a field in the response data"""
+    response_values = [item.get(field_name) for item in response_data]
+    query_params_values = QueryParamParser.parse_comma_separated(
+        field_value
+    )
 
-    return [item.get(field_name) for item in response_data]
+    return response_values, query_params_values

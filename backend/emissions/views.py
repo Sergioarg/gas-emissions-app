@@ -5,8 +5,8 @@ from rest_framework.response import Response
 
 # Internal
 from emissions.app.service import EmissionApplicationService
-from emissions.helpers import get_filtered_emissions
-from emissions.infrastructure.django_emission_repository import \
+from emissions.helpers.service import get_filtered_emissions
+from emissions.infrastructure.django_repository import \
     DjangoEmissionRepository
 from emissions.models import Emission as DjangoEmission
 from emissions.serializers import (

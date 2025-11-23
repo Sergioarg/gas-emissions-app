@@ -2,7 +2,7 @@
 from rest_framework import serializers
 
 # Internal
-from emissions.helpers import validate_non_str_and_multiple_values
+from emissions.helpers.validators import QueryParamValidator
 
 
 class EmissionSerializer(serializers.Serializer):
@@ -16,12 +16,12 @@ class EmissionSerializer(serializers.Serializer):
 class EmissionQueryParamSerializer(serializers.Serializer):
     activity = serializers.CharField(
         required=False,
-        validators=[validate_non_str_and_multiple_values]
+        validators=[QueryParamValidator.validate_non_empty_and_non_numeric]
     )
     country = serializers.CharField(
         required=False,
         max_length=24,
-        validators=[validate_non_str_and_multiple_values]
+        validators=[QueryParamValidator.validate_non_empty_and_non_numeric]
     )
     emission_type = serializers.CharField(
         required=False,
