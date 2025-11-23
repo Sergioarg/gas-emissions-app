@@ -2,8 +2,6 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
-from emissions.value_objects import CountryValueObject
-
 
 @dataclass
 class Emission:
@@ -11,7 +9,7 @@ class Emission:
     year: int
     emissions: float
     emission_type: str
-    country: CountryValueObject
+    country: str
     activity: str
     created_at: datetime
 
@@ -25,7 +23,6 @@ class Emission:
             year: int,
             emissions: float,
             emission_type: str,
-            country_code: str,
             country_name: str,
             activity: str
     ) -> 'Emission':
@@ -40,7 +37,7 @@ class Emission:
             year=year,
             emissions=emissions,
             emission_type=emission_type,
-            country=CountryValueObject(country_name),
+            country=country_name,
             activity=activity,
             created_at=datetime.now()
         )

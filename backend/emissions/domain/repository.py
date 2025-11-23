@@ -25,5 +25,5 @@ class EmissionRepositoryInterface(ABC):
         pass
 
     @abstractmethod
-    def find_by_type(self, emission_type: str) -> List[Emission]:
+    def find_by_emissions_type(self, emission_type: str) -> List[Emission]:
         pass

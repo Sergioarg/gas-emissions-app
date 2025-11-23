@@ -1,7 +1,6 @@
 from emissions.domain.emission import Emission
 from emissions.domain.repository import EmissionRepositoryInterface
 
-from emissions.value_objects import CountryValueObject
 from emissions.models import Emission as DjangoEmission
 
 
@@ -35,7 +34,7 @@ class DjangoEmissionRepository(EmissionRepositoryInterface):
             year=django_emission.year,
             emissions=float(django_emission.emissions),
             emission_type=django_emission.emission_type,
-            country=CountryValueObject(name=django_emission.country),
+            country=django_emission.country,
             activity=django_emission.activity,
             created_at=django_emission.created_at
         )

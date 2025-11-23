@@ -6,16 +6,14 @@ from emissions.helpers import validate_non_str_and_multiple_values
 
 
 class EmissionSerializer(serializers.Serializer):
-
     year = serializers.IntegerField()
     emissions = serializers.FloatField()
     emission_type = serializers.CharField()
-    country = serializers.CharField(source='country.name')
+    country = serializers.CharField()
     activity = serializers.CharField()
 
 
 class EmissionQueryParamSerializer(serializers.Serializer):
-    string_regex = r'^[a-zA-Z\s]+$'
     activity = serializers.CharField(
         required=False,
         validators=[validate_non_str_and_multiple_values]
