@@ -1,0 +1,7 @@
+# SQLite database
+*.sqlite3
+# Venv
+.venv
+# Pytest cache and pycache
+__pycache__/
+.pytest_cache/

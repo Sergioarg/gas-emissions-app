@@ -1,0 +1,302 @@
+[
+  {
+    "model": "emissions.emission",
+    "pk": 1,
+    "fields": {
+      "created_at": "2023-01-15T10:00:00Z",
+      "year": 2016,
+      "emissions": 2.9,
+      "emission_type": "N2O",
+      "country": "United Kingdom",
+      "activity": "Waste"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 2,
+    "fields": {
+      "created_at": "2023-01-16T10:00:00Z",
+      "year": 2015,
+      "emissions": 45.2,
+      "emission_type": "CO2",
+      "country": "United States",
+      "activity": "Transportation"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 3,
+    "fields": {
+      "created_at": "2023-01-17T10:00:00Z",
+      "year": 2017,
+      "emissions": 12.8,
+      "emission_type": "CH4",
+      "country": "Canada",
+      "activity": "Agriculture"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 4,
+    "fields": {
+      "created_at": "2023-01-18T10:00:00Z",
+      "year": 2016,
+      "emissions": 8.5,
+      "emission_type": "N2O",
+      "country": "Australia",
+      "activity": "Industrial Processes"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 5,
+    "fields": {
+      "created_at": "2023-01-19T10:00:00Z",
+      "year": 2018,
+      "emissions": 67.3,
+      "emission_type": "CO2",
+      "country": "Germany",
+      "activity": "Energy Production"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 6,
+    "fields": {
+      "created_at": "2023-01-20T10:00:00Z",
+      "year": 2017,
+      "emissions": 3.2,
+      "emission_type": "SF6",
+      "country": "Japan",
+      "activity": "Industrial Processes"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 7,
+    "fields": {
+      "created_at": "2023-01-21T10:00:00Z",
+      "year": 2016,
+      "emissions": 23.1,
+      "emission_type": "CH4",
+      "country": "United Kingdom",
+      "activity": "Agriculture"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 8,
+    "fields": {
+      "created_at": "2023-01-22T10:00:00Z",
+      "year": 2019,
+      "emissions": 15.7,
+      "emission_type": "CO2",
+      "country": "France",
+      "activity": "Transportation"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 9,
+    "fields": {
+      "created_at": "2023-01-23T10:00:00Z",
+      "year": 2018,
+      "emissions": 9.4,
+      "emission_type": "N2O",
+      "country": "Netherlands",
+      "activity": "Waste"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 10,
+    "fields": {
+      "created_at": "2023-01-24T10:00:00Z",
+      "year": 2017,
+      "emissions": 34.6,
+      "emission_type": "CO2",
+      "country": "Italy",
+      "activity": "Energy Production"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 11,
+    "fields": {
+      "created_at": "2023-01-25T10:00:00Z",
+      "year": 2016,
+      "emissions": 5.8,
+      "emission_type": "CH4",
+      "country": "Spain",
+      "activity": "Agriculture"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 12,
+    "fields": {
+      "created_at": "2023-01-26T10:00:00Z",
+      "year": 2019,
+      "emissions": 7.2,
+      "emission_type": "N2O",
+      "country": "Sweden",
+      "activity": "Industrial Processes"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 13,
+    "fields": {
+      "created_at": "2023-01-27T10:00:00Z",
+      "year": 2018,
+      "emissions": 28.9,
+      "emission_type": "CO2",
+      "country": "Norway",
+      "activity": "Energy Production"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 14,
+    "fields": {
+      "created_at": "2023-01-28T10:00:00Z",
+      "year": 2017,
+      "emissions": 4.1,
+      "emission_type": "SF6",
+      "country": "Denmark",
+      "activity": "Industrial Processes"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 15,
+    "fields": {
+      "created_at": "2023-01-29T10:00:00Z",
+      "year": 2016,
+      "emissions": 18.3,
+      "emission_type": "CH4",
+      "country": "Finland",
+      "activity": "Waste"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 16,
+    "fields": {
+      "created_at": "2023-01-30T10:00:00Z",
+      "year": 2019,
+      "emissions": 41.7,
+      "emission_type": "CO2",
+      "country": "Belgium",
+      "activity": "Transportation"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 17,
+    "fields": {
+      "created_at": "2023-01-31T10:00:00Z",
+      "year": 2018,
+      "emissions": 11.5,
+      "emission_type": "N2O",
+      "country": "Austria",
+      "activity": "Agriculture"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 18,
+    "fields": {
+      "created_at": "2023-02-01T10:00:00Z",
+      "year": 2017,
+      "emissions": 22.4,
+      "emission_type": "CO2",
+      "country": "Switzerland",
+      "activity": "Energy Production"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 19,
+    "fields": {
+      "created_at": "2023-02-02T10:00:00Z",
+      "year": 2016,
+      "emissions": 6.9,
+      "emission_type": "CH4",
+      "country": "Ireland",
+      "activity": "Industrial Processes"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 20,
+    "fields": {
+      "created_at": "2023-02-03T10:00:00Z",
+      "year": 2019,
+      "emissions": 13.8,
+      "emission_type": "N2O",
+      "country": "Portugal",
+      "activity": "Waste"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 21,
+    "fields": {
+      "created_at": "2023-02-04T10:00:00Z",
+      "year": 2018,
+      "emissions": 55.2,
+      "emission_type": "CO2",
+      "country": "Poland",
+      "activity": "Transportation"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 22,
+    "fields": {
+      "created_at": "2023-02-05T10:00:00Z",
+      "year": 2017,
+      "emissions": 8.7,
+      "emission_type": "CH4",
+      "country": "Czech Republic",
+      "activity": "Agriculture"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 23,
+    "fields": {
+      "created_at": "2023-02-06T10:00:00Z",
+      "year": 2016,
+      "emissions": 3.4,
+      "emission_type": "SF6",
+      "country": "Greece",
+      "activity": "Industrial Processes"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 24,
+    "fields": {
+      "created_at": "2023-02-07T10:00:00Z",
+      "year": 2019,
+      "emissions": 29.6,
+      "emission_type": "CO2",
+      "country": "Hungary",
+      "activity": "Energy Production"
+    }
+  },
+  {
+    "model": "emissions.emission",
+    "pk": 25,
+    "fields": {
+      "created_at": "2023-02-08T10:00:00Z",
+      "year": 2018,
+      "emissions": 9.1,
+      "emission_type": "N2O",
+      "country": "New Zealand",
+      "activity": "Waste"
+    }
+  }
+]
