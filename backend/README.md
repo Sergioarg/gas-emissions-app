@@ -24,38 +24,40 @@ The API provides read-only access to emissions data with advanced filtering capa
 ### Installation
 
 1. Clone the repository:
-    ```
-    git clone <repository-url>
-    ```
+  ```
+  git clone <repository-url>
+  ```
 2. Navigate to the backend directory:
-   ```
-   cd gas-emissions-api/backend
-   ```
+  ```
+  cd gas-emissions-api/backend
+  ```
 3. Create a virtual environment (optional but recommended):
-   ```
-   python3 -m venv venv
-   ```
+  ```
+  python3 -m venv venv
+  ```
 4. Activate the virtual environment:
    - On Windows:
-      ```
-      .\venv\Scripts\activate
-      ```
+    ```
+    .\venv\Scripts\activate
+    ```
    - On Unix or MacOS:
-     ```
-     source venv/bin/activate
-     ```
+    ```
+    source venv/bin/activate
+    ```
 5. Install the required packages:
-   ```
-   pip install -r requirements.txt
-   ```
+  ```
+  pip install -r requirements.txt
+  ```
 6. Apply migrations to set up the database:
-   ```
-   python manage.py migrate
-   ```
-7. (Optional) Load sample data:
-   ```
-   python manage.py loaddata emissions/fixtures/sample_emissions.json
-   ```
+  ```
+  python manage.py migrate
+  ```
+7. (Optional) Load sample data with 25 emission records:
+  ```
+  python manage.py loaddata emissions/fixtures/sample_emissions.json
+  ```
+
+  The sample data includes emissions from various English-speaking countries (United States, United Kingdom, Canada, Australia, etc.) with different emission types (CO2, CH4, N2O, SF6) and activities (Transportation, Agriculture, Energy Production, Waste, Industrial Processes).
 
 ## Running the Server
 
@@ -89,14 +91,12 @@ To interact with the API, you can use tools like `curl`, Postman, or any HTTP cl
   ```json
   [
     {
-      "id": 1,
-      "year": 2023,
-      "emissions": 150.5,
-      "emission_type": "CO2",
-      "country": "México",
-      "activity": "Transporte",
-      "created_at": "2023-11-22T12:00:00Z"
-    }
+      "year": 2016,
+      "emissions": 2.9,
+      "emission_type": "N2O",
+      "country": "United Kingdom",
+      "activity": "Waste",
+    },
   ]
   ```
 
@@ -109,31 +109,31 @@ Once the application is running, you can access the API endpoints using a web br
 #### Get All Emissions
 ```bash
 curl -X GET "http://127.0.0.1:8000/api/emissions/" \
-     -H "Content-Type: application/json"
+  -H "Content-Type: application/json"
 ```
 
 #### Filter by Country
 ```bash
-curl -X GET "http://127.0.0.1:8000/api/emissions/?country=México" \
-     -H "Content-Type: application/json"
+curl -X GET "http://127.0.0.1:8000/api/emissions/?country=Japan" \
+  -H "Content-Type: application/json"
 ```
 
 #### Filter by Activity
 ```bash
-curl -X GET "http://127.0.0.1:8000/api/emissions/?activity=Transporte" \
-     -H "Content-Type: application/json"
+curl -X GET "http://127.0.0.1:8000/api/emissions/?activity=Industrial Processes" \
+  -H "Content-Type: application/json"
 ```
 
 #### Filter by Emission Type
 ```bash
 curl -X GET "http://127.0.0.1:8000/api/emissions/?emission_type=CO2" \
-     -H "Content-Type: application/json"
+  -H "Content-Type: application/json"
 ```
 
 #### Multiple Filters
 ```bash
-curl -X GET "http://127.0.0.1:8000/api/emissions/?country=Brasil&emission_type=CH4" \
-     -H "Content-Type: application/json"
+curl -X GET "http://127.0.0.1:8000/api/emissions/?country=Japan&emission_type=SF6" \
+  -H "Content-Type: application/json"
 ```
 
 ### Response Format
@@ -141,51 +141,49 @@ curl -X GET "http://127.0.0.1:8000/api/emissions/?country=Brasil&emission_type=C
 All endpoints return data in the following format:
 
 ```json
-{
-  "count": 25,
-  "results": [
-    {
-      "id": 1,
-      "year": 2023,
-      "emissions": 150.5,
-      "emission_type": "CO2",
-      "country": "México",
-      "activity": "Transporte",
-      "created_at": "2023-11-22T12:00:00Z"
-    }
-  ]
-}
+[
+  {
+  "year": 2016,
+  "emissions": 2.9,
+  "emission_type": "N2O",
+  "country": "United Kingdom",
+  "activity": "Waste",
+  },
+]
 ```
 
 ### Available Filter Values
 
-#### Countries (Nombres completos)
-- México
-- Brasil
-- Argentina
-- Colombia
-- Perú
-- Chile
-- Ecuador
-- Uruguay
+#### Countries (Full Names)
+The API supports filtering by full country names. Sample data includes:
 
-#### Activities (Actividades)
-- Transporte
-- Industria
-- Agricultura
-- Energía
-- Manufactura
-- Minería
-- Residuos
-- Deforestación
-- Producción de cemento
-- Quema de combustibles
+**English-speaking countries:**
+- United States, United Kingdom, Canada, Australia, New Zealand
 
-#### Emission Types (Tipos de Emisión)
-- CO2 (Dióxido de Carbono)
-- CH4 (Metano)
-- N2O (Óxido Nitroso)
-- SF6 (Hexafluoruro de Azufre)
+**European countries:**
+- Germany, France, Italy, Spain, Netherlands, Sweden, Norway, Denmark, Finland
+- Belgium, Austria, Switzerland, Ireland, Portugal, Poland, Czech Republic, Greece, Hungary
+
+**Latin American countries:**
+- Mexico, Brazil, Argentina, Colombia, Peru, Chile, Ecuador, Uruguay
+
+#### Activities (Economic Sectors)
+- Transportation
+- Agriculture
+- Energy Production
+- Industrial Processes
+- Waste
+- Manufacturing
+- Mining
+- Deforestation
+- Cement Production
+- Fuel Combustion
+
+#### Emission Types
+- CO2 (Carbon Dioxide)
+- CH4 (Methane)
+- N2O (Nitrous Oxide)
+- SF6 (Sulfur Hexafluoride)
 
 ## Testing
 
@@ -195,14 +193,7 @@ The project includes comprehensive tests covering all layers of the DDD architec
 
 ```bash
 # Run all tests
-python -m pytest emissions/tests.py -v
-
-# Run with coverage report
-python -m pytest emissions/tests.py --cov=emissions --cov-report=html
-
-# Run specific test categories
-python -m pytest emissions/tests.py::TestCountryValueObject -v  # Domain tests
-python -m pytest emissions/tests.py::TestEmissionAPI -v        # API tests
+python manage.py test
 ```
 
 ### Test Coverage
@@ -255,10 +246,6 @@ This API follows **Domain-Driven Design (DDD)** principles with clean architectu
 | activity | String | Economic activity sector |
 | created_at | DateTime | Record creation timestamp |
 
-### Supported Countries
-
-The API includes data for Latin American countries:
-- México, Brasil, Argentina, Colombia, Perú, Chile, Ecuador, Uruguay
 
 ### Supported Emission Types
 
