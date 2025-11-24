@@ -8,7 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import * as d3 from 'd3';
 import { EmissionApi } from '../../data/emission.api';
 import { Emission } from '../../core/models/emissions';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, timer, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-emissions-chart',
@@ -29,11 +29,13 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
   private destroy$ = new Subject<void>();
   public loading = true;
   public error: string | null = null;
-  private svg: any;
+  private svg: d3.Selection<SVGGElement, unknown, null, undefined> | null = null;
   private margin = { top: 50, right: 80, bottom: 60, left: 80 };
   private width = 800;
   private height = 400;
   private emissionsData: Emission[] | null = null;
+  private initTimeoutId: ReturnType<typeof setTimeout> | null = null;
+  private readonly POLLING_INTERVAL_MS = 10 * 60 * 1000;
 
   public selectedCountry: string | null = null;
   public selectedActivity: string | null = null;
@@ -50,6 +52,36 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngOnInit(): void {
     this.loadEmissions();
+
+    timer(0, this.POLLING_INTERVAL_MS)
+      .pipe(
+        switchMap(() => {
+          const filters: {
+            country?: string;
+            activity?: string;
+            emission_type?: string;
+          } = {};
+
+          if (this.selectedCountry) filters.country = this.selectedCountry;
+          if (this.selectedActivity) filters.activity = this.selectedActivity;
+          if (this.selectedEmissionType) filters.emission_type = this.selectedEmissionType;
+
+          return this.emissionApi.getEmissions(
+            Object.keys(filters).length > 0 ? filters : undefined
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (emissions: Emission[]) => {
+          if (!this.loading) {
+            this.updateEmissionsData(emissions);
+          }
+        },
+        error: (err: Error) => {
+          console.error('Error en polling de emisiones:', err);
+        }
+      });
   }
 
   ngAfterViewInit(): void {
@@ -64,21 +96,30 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngOnDestroy(): void {
-    d3.select('.emissions-tooltip').remove();
+    if (this.initTimeoutId) {
+      clearTimeout(this.initTimeoutId);
+    }
+    if (isPlatformBrowser(this.platformId)) {
+      d3.select('.emissions-tooltip').remove();
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }
 
   private initChart(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     if (!this.chartContainer?.nativeElement) {
-      setTimeout(() => this.initChart(), 100);
+      this.initTimeoutId = setTimeout(() => this.initChart(), 100);
       return;
     }
 
     const element = this.chartContainer.nativeElement;
 
     if (element.offsetWidth === 0) {
-      setTimeout(() => this.initChart(), 100);
+      this.initTimeoutId = setTimeout(() => this.initChart(), 100);
       return;
     }
 
@@ -100,7 +141,12 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
     this.loading = true;
     this.error = null;
 
-    const filters: any = {};
+    const filters: {
+      country?: string;
+      activity?: string;
+      emission_type?: string;
+    } = {};
+
     if (this.selectedCountry) filters.country = this.selectedCountry;
     if (this.selectedActivity) filters.activity = this.selectedActivity;
     if (this.selectedEmissionType) filters.emission_type = this.selectedEmissionType;
@@ -109,43 +155,46 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (emissions: Emission[]) => {
-          this.emissionsData = emissions;
-
-          if (this.availableCountries.length === 0) {
-            this.updateFilterOptions(emissions);
-          }
-
-          setTimeout(() => {
-            this.loading = false;
-            this.cdr.detectChanges();
-            
-            setTimeout(() => {
-              if (this.chartContainer?.nativeElement) {
-                if (!this.svg) {
-                  this.initChart();
-                }
-                this.processData(emissions);
-              } else {
-                setTimeout(() => {
-                  if (this.chartContainer?.nativeElement) {
-                    if (!this.svg) {
-                      this.initChart();
-                    }
-                    this.processData(emissions);
-                  }
-                }, 200);
-              }
-            }, 100);
-          }, 0);
+          this.updateEmissionsData(emissions);
         },
-        error: (err) => {
-          setTimeout(() => {
-            this.error = 'Error loading emissions data';
-            this.loading = false;
-            this.cdr.detectChanges();
-          }, 0);
+        error: (err: Error) => {
+          this.error = err.message || 'Error loading emissions data';
+          this.loading = false;
+          this.cdr.detectChanges();
         }
       });
+  }
+
+  private updateEmissionsData(emissions: Emission[]): void {
+    this.emissionsData = emissions;
+
+    if (this.availableCountries.length === 0) {
+      this.updateFilterOptions(emissions);
+    }
+
+    this.loading = false;
+    this.cdr.detectChanges();
+
+    setTimeout(() => {
+      this.initializeChartAndProcessData(emissions);
+    }, 0);
+  }
+
+  private initializeChartAndProcessData(emissions: Emission[]): void {
+    if (!this.chartContainer?.nativeElement) {
+      setTimeout(() => this.initializeChartAndProcessData(emissions), 100);
+      return;
+    }
+
+    if (!this.svg) {
+      this.initChart();
+    }
+
+    if (this.svg) {
+      this.processData(emissions);
+    } else {
+      setTimeout(() => this.initializeChartAndProcessData(emissions), 100);
+    }
   }
 
   private updateFilterOptions(emissions: Emission[]): void {
@@ -177,6 +226,10 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   private processData(emissions: Emission[]): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     if (!emissions || emissions.length === 0) {
       this.error = 'No data available';
       return;
@@ -261,7 +314,7 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
       .y(d => yScale(d.emissions))
       .curve(d3.curveMonotoneX);
 
-    let tooltip: any = null;
+    let tooltip: d3.Selection<HTMLDivElement, unknown, HTMLElement, unknown> | null = null;
     if (isPlatformBrowser(this.platformId)) {
       tooltip = d3.select('body')
         .append('div')
@@ -281,7 +334,7 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
       const validValues = data.values.filter(d => d.emissions > 0);
 
       if (validValues.length > 0) {
-        this.svg.append('path')
+        this.svg?.append('path')
           .datum(validValues)
           .attr('fill', 'none')
           .attr('stroke', colors(data.type))
@@ -290,7 +343,7 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
           .attr('class', `line line-${index}`)
           .style('opacity', 0.9);
 
-        this.svg.selectAll(`.dot-${index}`)
+        this.svg?.selectAll(`.dot-${index}`)
           .data(validValues)
           .enter()
           .append('circle')
