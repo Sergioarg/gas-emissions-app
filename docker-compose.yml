@@ -7,7 +7,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - SECRET_KEY=${SECRET_KEY:-django-insecure-16$p)5te3akkw6yu5cjy9_@f+&3p90j!cb#x_!qm5y+_mmq_wf}
+      # - SECRET_KEY=${SECRET_KEY:-django-insecure-16$p)5te3akkw6yu5cjy9_@f+&3p90j!cb#x_!qm5y+_mmq_wf}
       - DEBUG=${DEBUG:-True}
     volumes:
       # Mount database for persistence
@@ -26,18 +26,23 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     container_name: frontend
     ports:
-      - "4200:80"
+      - "4200:4200"
     depends_on:
       - backend
+    volumes:
+      # Montar código fuente para hot-reload
+      - ./frontend:/app
+      - /app/node_modules
     networks:
       - emissions-network
     environment:
       - API_URL=http://backend:8000
+      - CHOKIDAR_USEPOLLING=true  # Para hot-reload en Docker
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4200/"]
       interval: 30s
       timeout: 10s
       retries: 3

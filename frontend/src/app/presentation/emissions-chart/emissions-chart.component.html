@@ -1,0 +1,79 @@
+<div class="chart-wrapper">
+    <!-- Filtros con Material Design -->
+    <mat-card class="filters-section">
+      <mat-card-header>
+        <mat-card-title>Filtros</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <!-- Filtro por País -->
+        <div class="filter-group">
+          <label class="filter-label">País</label>
+          <mat-chip-set>
+            <mat-chip-option
+              *ngFor="let country of availableCountries"
+              [selected]="selectedCountry === country"
+              (click)="filterByCountry(country)">
+              {{ country }}
+            </mat-chip-option>
+          </mat-chip-set>
+        </div>
+
+        <!-- Filtro por Actividad -->
+        <div class="filter-group">
+          <label class="filter-label">Actividad</label>
+          <mat-chip-set>
+            <mat-chip-option
+              *ngFor="let activity of availableActivities"
+              [selected]="selectedActivity === activity"
+              (click)="filterByActivity(activity)">
+              {{ activity }}
+            </mat-chip-option>
+          </mat-chip-set>
+        </div>
+
+        <!-- Filtro por Tipo de Emisión -->
+        <div class="filter-group">
+          <label class="filter-label">Tipo de Emisión</label>
+          <mat-chip-set>
+            <mat-chip-option
+              *ngFor="let emissionType of availableEmissionTypes"
+              [selected]="selectedEmissionType === emissionType"
+              (click)="filterByEmissionType(emissionType)">
+              {{ emissionType }}
+            </mat-chip-option>
+          </mat-chip-set>
+        </div>
+
+        <!-- Botón para limpiar filtros -->
+        <div class="clear-button-container">
+          <button
+            mat-raised-button
+            color="warn"
+            (click)="clearFilters()"
+            [disabled]="!selectedCountry && !selectedActivity && !selectedEmissionType">
+            Limpiar Filtros
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading emissions data...</p>
+    </div>
+
+    <!-- Error Message -->
+    <mat-card *ngIf="error && !loading" class="error-card">
+      <mat-card-content>
+        <p>Error loading emissions data: {{ error }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Chart Container -->
+    <mat-card class="chart-card" [style.display]="loading || error ? 'none' : 'block'">
+      <mat-card-content>
+        <div #chartContainer class="chart"></div>
+      </mat-card-content>
+    </mat-card>
+  </div>
