@@ -116,6 +116,13 @@ The collection includes:
 3. View example responses by clicking on the "Examples" dropdown in the response section
 4. Enable/disable query parameters as needed to test different filter combinations
 
+### CURL Base
+
+```bash
+curl -X GET "http://localhost:8000/api/emissions/" \
+  -H "Content-Type: application/json"
+```
+
 #### Example Requests in Collection
 
 - `GET {{localhost}}/api/emissions/` - Get all emissions
