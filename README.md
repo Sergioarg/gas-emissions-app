@@ -86,7 +86,7 @@ gas-emissions-api/
 
 #### Backend Setup
 
-For detailed instructions on setting up and using the backend, see the file [backend/README.md](../backend/README.md).
+For detailed instructions on setting up and using the backend, see the file [Backend README.md](backend/README.md).
 
 
 ### Docker Development
@@ -108,7 +108,7 @@ The easiest way to run the entire application is using Docker Compose:
    docker-compose down
    ```
 
-For detailed Docker instructions, see [README.DOCKER.md](./README.DOCKER.md)
+For detailed Docker instructions, see [README DOCKER](./README.DOCKER.md)
 
 ## 📚 API Documentation
 
@@ -168,4 +168,3 @@ This is a technical test project. For production deployment, consider:
 - Setting up proper logging and monitoring
 - Using a production WSGI server (Gunicorn, uWSGI)
 - Configuring HTTPS and security headers
-
