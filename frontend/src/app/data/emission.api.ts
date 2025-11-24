@@ -13,7 +13,30 @@ export class EmissionApi {
 
   constructor(private http: HttpClient) {}
 
-  getEmissions(): Observable<Emission[]> {
-    return this.http.get<Emission[]>(this.apiUrl + `${ROUTES.emissions}`);
+  getEmissions(filters?: {
+    country?: string;
+    activity?: string;
+    emission_type?: string;
+  }): Observable<Emission[]> {
+    let url = this.apiUrl + `${ROUTES.emissions}`;
+    const params: string[] = [];
+
+    if (filters) {
+      if (filters.country) {
+        params.push(`country=${encodeURIComponent(filters.country)}`);
+      }
+      if (filters.activity) {
+        params.push(`activity=${encodeURIComponent(filters.activity)}`);
+      }
+      if (filters.emission_type) {
+        params.push(`emission_type=${encodeURIComponent(filters.emission_type)}`);
+      }
+    }
+
+    if (params.length > 0) {
+      url += '?' + params.join('&');
+    }
+
+    return this.http.get<Emission[]>(url);
   }
 }

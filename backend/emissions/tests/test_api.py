@@ -1,9 +1,8 @@
 import pytest
+# Internal
+from emissions.tests.conftest import extract_and_normalize_field
+# DRF
 from rest_framework import status
-
-# Helpers
-from emissions.helpers import split_comma_separated_values
-from emissions.tests.conftest import extract_field_from_response_data
 
 
 @pytest.mark.django_db
@@ -49,11 +48,13 @@ class TestEmissionAPI:
 
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data) == number_results
-        countries_response = extract_field_from_response_data(
-            response.data, "country"
+        (
+            countries_response,
+            countries_query_params
+        ) = extract_and_normalize_field(
+            response.data, "country", country
         )
-        countries = split_comma_separated_values(country)
-        for country in countries:
+        for country in countries_query_params:
             assert country in countries_response
 
     @pytest.mark.parametrize(
@@ -74,11 +75,13 @@ class TestEmissionAPI:
 
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data) == number_results
-        activities_response = extract_field_from_response_data(
-            response.data, "activity"
+        (
+            activities_response,
+            activities_query_params
+        ) = extract_and_normalize_field(
+            response.data, "activity", activity
         )
-        activities = split_comma_separated_values(activity)
-        for activity in activities:
+        for activity in activities_query_params:
             assert activity in activities_response
 
     @pytest.mark.parametrize(
@@ -101,11 +104,13 @@ class TestEmissionAPI:
 
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data) == number_results
-        emission_types_response = extract_field_from_response_data(
-            response.data, "emission_type"
+        (
+            emission_types_response,
+            emission_types_query_params
+        ) = extract_and_normalize_field(
+            response.data, "emission_type", emission_type
         )
-        emission_types = split_comma_separated_values(emission_type)
-        for emission_type in emission_types:
+        for emission_type in emission_types_query_params:
             assert emission_type in emission_types_response
 
     @pytest.mark.parametrize(
@@ -123,9 +128,3 @@ class TestEmissionAPI:
         response = api_client.get(f"{self.BASE_URL}?{param}={value}")
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "error" in response.data
-
-    # TODO: Check test for invalid country empty
-    # def test_filter_invalid_country_empty(self, api_client):
-    #     response = api_client.get(f"{self.BASE_URL}?country=")
-    #     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    #     assert "error" in response.data
