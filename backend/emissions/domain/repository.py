@@ -17,13 +17,11 @@ class EmissionRepositoryInterface(ABC):
         pass
 
     @abstractmethod
-    def find_by_country(self, country_name: str) -> List[Emission]:
-        pass
-
-    @abstractmethod
-    def find_by_activity(self, activity: str) -> List[Emission]:
-        pass
-
-    @abstractmethod
-    def find_by_emissions_type(self, emission_type: str) -> List[Emission]:
+    def find_filtered(
+        self,
+        countries: List[str] = None,
+        activities: List[str] = None,
+        emission_types: List[str] = None
+    ) -> List[Emission]:
+        """Find emissions with filters applied at DB level."""
         pass
