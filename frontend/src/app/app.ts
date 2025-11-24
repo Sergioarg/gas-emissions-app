@@ -1,10 +1,9 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { EmissionsChartComponent } from './presentation/emissions-chart/emissions-chart.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, EmissionsChartComponent],
+  imports: [EmissionsChartComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
