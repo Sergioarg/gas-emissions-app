@@ -30,7 +30,7 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
   public loading = true;
   public error: string | null = null;
   private svg: any;
-  private margin = { top: 20, right: 80, bottom: 60, left: 80 };
+  private margin = { top: 50, right: 80, bottom: 60, left: 80 };
   private width = 800;
   private height = 400;
   private emissionsData: Emission[] | null = null;
@@ -363,7 +363,7 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
 
     this.svg.append('text')
       .attr('x', this.width / 2)
-      .attr('y', -10)
+      .attr('y', -25)
       .attr('fill', 'currentColor')
       .style('text-anchor', 'middle')
       .style('font-size', '18px')
