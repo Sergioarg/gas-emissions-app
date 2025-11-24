@@ -78,7 +78,7 @@ python manage.py migrate
 8. (Optional/Recomended) Load sample data with 25 emission records:
 
 ```
-python manage.py loaddata emissions/fixtures/sample_emissions.json
+python manage.py loaddata fixtures/sample_emissions.json
 ```
 
 The sample data includes emissions from various English-speaking countries (United States, United Kingdom, Canada, Australia, etc.) with different emission types (CO2, CH4, N2O, SF6) and activities (Transportation, Agriculture, Energy Production, Waste, Industrial Processes).

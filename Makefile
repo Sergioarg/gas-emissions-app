@@ -11,7 +11,12 @@ up-build: ## up-build
 down: ## down
 	docker compose down
 
+run: ## run
+	docker compose build
+	docker compose up -d
+
 rebuild: ## rebuild
+	docker compose down
 	docker compose build
 	docker compose up -d
 
@@ -26,6 +31,9 @@ rebuild-backend: ## rebuild-backend
 
 attach-backend: ## attach-backend
 	docker attach backend
+
+load-fixtures: ## load-fixtures
+	docker-compose exec backend python manage.py loaddata fixtures/sample_emissions.json
 
 attach-frontend: ## attach-frontend
 	docker attach frontend

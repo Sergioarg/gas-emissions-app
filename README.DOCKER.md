@@ -1,162 +1,230 @@
 # Docker Setup - Gas Emissions API
 
-Esta guía explica cómo ejecutar la aplicación completa (backend y frontend) usando Docker y Docker Compose.
+This guide explains how to run the complete application (backend and frontend) using Docker and Docker Compose.
 
-## Prerrequisitos
+## Prerequisites
 
-- Docker (versión 20.10 o superior)
-- Docker Compose (versión 2.0 o superior)
+- Docker (version 20.10 or higher)
+- Docker Compose (version 2.0 or higher)
 
-## Estructura Docker
+## Docker Structure
 
-El proyecto incluye:
+The project includes:
 
-- **Backend**: Django API en Python 3.13
-- **Frontend**: Angular 21 con Nginx
-- **Docker Compose**: Orquesta ambos servicios
+- **Backend**: Django API in Python 3.13
+- **Frontend**: Angular 21 with Nginx
+- **Docker Compose**: Orchestrates both services
 
-## Inicio Rápido
+## Quick Start
 
-### 1. Construir y ejecutar todos los servicios
+### 1. Build and run all services
 
+**Using Makefile (recommended):**
+```bash
+make up-build
+```
+
+**Or using Docker Compose directly:**
 ```bash
 docker-compose up --build
 ```
 
-Este comando:
-- Construye las imágenes de Docker para backend y frontend
-- Inicia ambos contenedores
-- Configura la red entre servicios
-- Ejecuta las migraciones de Django automáticamente
+This command:
+- Builds Docker images for backend and frontend
+- Starts both containers
+- Configures the network between services
+- Automatically runs Django migrations
 
-### 2. Acceder a la aplicación
+### 2. Access the application
 
 - **Frontend**: http://localhost:4200
 - **Backend API**: http://localhost:8000
 - **API Endpoints**: http://localhost:8000/api/emissions/
 
-### 3. Detener los servicios
+### 3. Stop services
 
+**Using Makefile:**
+```bash
+make down
+```
+
+**Or using Docker Compose:**
 ```bash
 docker-compose down
 ```
 
-Para eliminar también los volúmenes:
-
+To also remove volumes:
 ```bash
 docker-compose down -v
 ```
 
-## Comandos Útiles
+## Useful Commands
 
-### Ver logs
+### Build and Run
+
+**Using Makefile:**
+```bash
+# Build images only
+make build
+
+# Start services in detached mode
+make up
+
+# Build and start services
+make up-build
+
+# Rebuild and restart all services
+make rebuild
+
+# Rebuild and restart only frontend
+make rebuild-frontend
+
+# Rebuild and restart only backend
+make rebuild-backend
+```
+
+**Or using Docker Compose directly:**
+```bash
+docker-compose build
+docker-compose up -d
+docker-compose up --build
+```
+
+### View Logs
 
 ```bash
-# Todos los servicios
+# All services
 docker-compose logs -f
 
-# Solo backend
+# Backend only
 docker-compose logs -f backend
 
-# Solo frontend
+# Frontend only
 docker-compose logs -f frontend
 ```
 
-### Ejecutar comandos en los contenedores
+### Execute Commands in Containers
 
 ```bash
-# Backend - Ejecutar migraciones manualmente
+# Backend - Run migrations manually
 docker-compose exec backend python manage.py migrate
 
-# Backend - Crear superusuario
+# Backend - Create superuser
 docker-compose exec backend python manage.py createsuperuser
 
-# Backend - Cargar datos de prueba
-docker-compose exec backend python manage.py loaddata emissions/fixtures/sample_emissions.json
+# Backend - Load test data
+docker-compose exec backend python manage.py loaddata fixtures/sample_emissions.json
 
-# Backend - Ejecutar tests
+# Backend - Run tests
 docker-compose exec backend pytest
 
-# Frontend - Acceder al shell
+# Frontend - Access shell
 docker-compose exec frontend sh
 ```
 
-### Reconstruir un servicio específico
+### Attach to Containers
 
+**Using Makefile:**
 ```bash
-# Reconstruir solo el backend
+# Attach to backend container
+make attach-backend
+
+# Attach to frontend container
+make attach-frontend
+```
+
+**Or using Docker directly:**
+```bash
+docker attach backend
+docker attach frontend
+```
+
+### Rebuild a Specific Service
+
+**Using Makefile:**
+```bash
+# Rebuild only backend
+make rebuild-backend
+
+# Rebuild only frontend
+make rebuild-frontend
+```
+
+**Or using Docker Compose:**
+```bash
+# Rebuild only backend
 docker-compose build backend
 docker-compose up -d backend
 
-# Reconstruir solo el frontend
+# Rebuild only frontend
 docker-compose build frontend
 docker-compose up -d frontend
 ```
 
-## Variables de Entorno
+## Environment Variables
 
-Las variables de entorno se pueden configurar en un archivo `.env` en la raíz del proyecto:
+Environment variables can be configured in a `.env` file at the project root:
 
 ```env
-SECRET_KEY=tu-secret-key-aqui
+SECRET_KEY=your-secret-key-here
 DEBUG=True
 ```
 
-O pasarlas directamente en `docker-compose.yml`.
+Or pass them directly in `docker-compose.yml`.
 
-## Desarrollo
+## Development
 
-### Modo Desarrollo con Hot Reload
+### Development Mode with Hot Reload
 
-Para desarrollo, el código del backend está montado como volumen, por lo que los cambios se reflejan automáticamente. Sin embargo, para el frontend necesitarás reconstruir la imagen después de cambios significativos.
+For development, the backend code is mounted as a volume, so changes are reflected automatically. However, for the frontend you'll need to rebuild the image after significant changes.
 
-### Base de Datos
+### Database
 
-La base de datos SQLite se persiste en `./backend/db.sqlite3` mediante un volumen de Docker.
+The SQLite database is persisted in `./backend/db.sqlite3` via a Docker volume.
 
-## Producción
+## Production
 
-Para producción, considera:
+For production, consider:
 
-1. **Eliminar el volumen de código fuente** en `docker-compose.yml` (línea comentada)
-2. **Configurar variables de entorno** apropiadas
-3. **Usar una base de datos externa** (PostgreSQL, MySQL) en lugar de SQLite
-4. **Configurar HTTPS** con un proxy reverso (Nginx, Traefik)
-5. **Optimizar las imágenes** de Docker
+1. **Remove source code volume** in `docker-compose.yml` (commented line)
+2. **Configure appropriate environment variables**
+3. **Use an external database** (PostgreSQL, MySQL) instead of SQLite
+4. **Configure HTTPS** with a reverse proxy (Nginx, Traefik)
+5. **Optimize Docker images**
 
 ## Troubleshooting
 
-### El backend no inicia
+### Backend won't start
 
 ```bash
-# Ver logs detallados
+# View detailed logs
 docker-compose logs backend
 
-# Verificar que el puerto 8000 no esté en uso
+# Verify port 8000 is not in use
 netstat -tuln | grep 8000
 ```
 
-### El frontend no se conecta al backend
+### Frontend can't connect to backend
 
-Verifica que:
-- Ambos contenedores estén en la misma red (`emissions-network`)
-- El frontend use `http://backend:8000` para las llamadas API (no `localhost`)
-- Los healthchecks estén pasando: `docker-compose ps`
+Verify that:
+- Both containers are on the same network (`emissions-network`)
+- Frontend uses `http://backend:8000` for API calls (not `localhost`)
+- Health checks are passing: `docker-compose ps`
 
-### Limpiar todo y empezar de nuevo
+### Clean everything and start fresh
 
 ```bash
-# Detener y eliminar contenedores, redes y volúmenes
+# Stop and remove containers, networks, and volumes
 docker-compose down -v
 
-# Eliminar imágenes
+# Remove images
 docker-compose rm -f
 
-# Limpiar sistema Docker (cuidado: elimina todo)
+# Clean Docker system (careful: removes everything)
 docker system prune -a
 ```
 
-## Arquitectura
+## Architecture
 
 ```
 ┌─────────────────┐
@@ -174,4 +242,4 @@ docker system prune -a
 └─────────────────┘
 ```
 
-Ambos servicios están en la red `emissions-network` y pueden comunicarse usando los nombres de servicio (`backend`, `frontend`).
+Both services are on the `emissions-network` network and can communicate using service names (`backend`, `frontend`).
