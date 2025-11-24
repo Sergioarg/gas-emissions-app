@@ -13,3 +13,7 @@ db.sqlite3
 .env
 .env.local
 .envrc
+
+# Coverage
+htmlcov/
+.coverage

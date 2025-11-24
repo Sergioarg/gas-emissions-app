@@ -24,47 +24,75 @@ The API provides read-only access to emissions data with advanced filtering capa
 ### Installation
 
 1. Clone the repository:
-  ```
-  git clone <repository-url>
-  ```
+
+```
+git clone <repository-url>
+```
+
 2. Navigate to the backend directory:
-  ```
-  cd gas-emissions-api/backend
-  ```
+
+```
+cd gas-emissions-api/backend
+```
+
 3. Create a virtual environment (optional but recommended):
-  ```
-  python3 -m venv venv
-  ```
+
+```
+python3 -m venv venv
+```
+
 4. Activate the virtual environment:
    - On Windows:
-    ```
-    .\venv\Scripts\activate
-    ```
+   ```
+   .\venv\Scripts\activate
+   ```
    - On Unix or MacOS:
-    ```
-    source venv/bin/activate
-    ```
+   ```
+   source venv/bin/activate
+   ```
 5. Install the required packages:
-  ```
-  pip install -r requirements.txt
-  ```
-6. Apply migrations to set up the database:
-  ```
-  python manage.py migrate
-  ```
-7. (Optional) Load sample data with 25 emission records:
-  ```
-  python manage.py loaddata emissions/fixtures/sample_emissions.json
-  ```
 
-  The sample data includes emissions from various English-speaking countries (United States, United Kingdom, Canada, Australia, etc.) with different emission types (CO2, CH4, N2O, SF6) and activities (Transportation, Agriculture, Energy Production, Waste, Industrial Processes).
+```
+pip install -r requirements.txt
+```
+
+6. Configure environment variables:
+
+   Create a `.envrc` file or set environment variables:
+
+   ```bash
+   export SECRET_KEY='your-secret-key-here'
+   export DEBUG='True'  # Use 'False' for production
+   ```
+
+   Or use the provided `.envrc` file (requires `direnv`):
+
+   ```bash
+   direnv allow
+   ```
+
+7. Apply migrations to set up the database:
+
+```
+python manage.py migrate
+```
+
+8. (Optional/Recomended) Load sample data with 25 emission records:
+
+```
+python manage.py loaddata emissions/fixtures/sample_emissions.json
+```
+
+The sample data includes emissions from various English-speaking countries (United States, United Kingdom, Canada, Australia, etc.) with different emission types (CO2, CH4, N2O, SF6) and activities (Transportation, Agriculture, Energy Production, Waste, Industrial Processes).
 
 ## Running the Server
 
 To start the server, run:
+
 ```
 python manage.py runserver
 ```
+
 The server will start at `http://localhost:8000`.
 
 ## API Endpoints
@@ -81,12 +109,13 @@ To interact with the API, you can use tools like `curl`, Postman, or any HTTP cl
 
 - **Endpoint**: `/api/emissions/`
 - **Method**: `GET`
-- **Description**: Retrieve emissions data with optional filtering
+- **Description**: Retrieve emissions data with optional filtering. Filters are applied at the database level for optimal performance.
 - **Query Parameters**:
-  - `country` (string): Filter by country name (e.g., "México", "Brasil")
-  - `activity` (string): Filter by activity type (e.g., "Transporte", "Industria")
-  - `emission_type` (string): Filter by emission type (e.g., "CO2", "CH4")
+  - `country` (string, optional): Filter by country name. Supports single value or comma-separated values (e.g., "Japan" or "Japan,Canada"). Case-insensitive partial match.
+  - `activity` (string, optional): Filter by activity type. Supports single value or comma-separated values (e.g., "Transportation" or "Transportation,Agriculture"). Case-insensitive partial match.
+  - `emission_type` (string, optional): Filter by emission type. Supports single value or comma-separated values (e.g., "CO2" or "CO2,CH4"). Exact match.
 - **Response**: Array of emission objects
+- **Performance**: All filtering is performed at the database level using Django ORM for optimal performance and scalability.
 - **Example Response**:
   ```json
   [
@@ -95,8 +124,8 @@ To interact with the API, you can use tools like `curl`, Postman, or any HTTP cl
       "emissions": 2.9,
       "emission_type": "N2O",
       "country": "United Kingdom",
-      "activity": "Waste",
-    },
+      "activity": "Waste"
+    }
   ]
   ```
 
@@ -104,37 +133,34 @@ To interact with the API, you can use tools like `curl`, Postman, or any HTTP cl
 
 Once the application is running, you can access the API endpoints using a web browser or a tool like `curl` or Postman.
 
-### API Usage Examples
+### Postman Collection
 
-#### Get All Emissions
-```bash
-curl -X GET "http://127.0.0.1:8000/api/emissions/" \
-  -H "Content-Type: application/json"
-```
+A Postman collection is included with pre-configured requests and example responses. This makes it easy to test the API without writing curl commands.
 
-#### Filter by Country
-```bash
-curl -X GET "http://127.0.0.1:8000/api/emissions/?country=Japan" \
-  -H "Content-Type: application/json"
-```
+#### Collection Contents
 
-#### Filter by Activity
-```bash
-curl -X GET "http://127.0.0.1:8000/api/emissions/?activity=Industrial Processes" \
-  -H "Content-Type: application/json"
-```
+The collection includes:
 
-#### Filter by Emission Type
-```bash
-curl -X GET "http://127.0.0.1:8000/api/emissions/?emission_type=CO2" \
-  -H "Content-Type: application/json"
-```
+- **Get Emissions** request with multiple example responses:
+  - **Get All Emissions**: Example response for retrieving all emissions
+  - **By Country**: Example response for filtering by country (e.g., `?country=Japan`)
+  - **By Waste**: Example response for filtering by activity (e.g., `?activity=Waste`)
+  - **By Emission Type**: Example response for filtering by emission type with multiple values (e.g., `?emission_type=N2O,CH4`)
 
-#### Multiple Filters
-```bash
-curl -X GET "http://127.0.0.1:8000/api/emissions/?country=Japan&emission_type=SF6" \
-  -H "Content-Type: application/json"
-```
+#### Using the Collection
+
+1. The collection uses a variable `{{localhost}}` set to `http://localhost:8000`
+2. You can modify query parameters directly in the request
+3. View example responses by clicking on the "Examples" dropdown in the response section
+4. Enable/disable query parameters as needed to test different filter combinations
+
+#### Example Requests in Collection
+
+- `GET {{localhost}}/api/emissions/` - Get all emissions
+- `GET {{localhost}}/api/emissions/?country=Japan` - Filter by country
+- `GET {{localhost}}/api/emissions/?activity=Waste` - Filter by activity
+- `GET {{localhost}}/api/emissions/?emission_type=N2O,CH4` - Filter by multiple emission types
+- `GET {{localhost}}/api/emissions/?emission_type=N2O,CH4&activity=Waste` - Filter by multiple params
 
 ### Response Format
 
@@ -143,28 +169,30 @@ All endpoints return data in the following format:
 ```json
 [
   {
-  "year": 2016,
-  "emissions": 2.9,
-  "emission_type": "N2O",
-  "country": "United Kingdom",
-  "activity": "Waste",
-  },
+    "year": 2016,
+    "emissions": 2.9,
+    "emission_type": "N2O",
+    "country": "United Kingdom",
+    "activity": "Waste"
+  }
 ]
 ```
 
+#### Combining Filters
+
+Multiple filters are combined with AND logic:
+
+- `?country=Japan&activity=Transportation` returns emissions where country contains "Japan" AND activity contains "Transportation"
+
+#### Validation Rules
+
+- Numeric-only values are rejected: `?country=123` returns 400 Bad Request
+- Multiple comma-separated values are supported: `?country=Japan,Canada` is valid
+
 ### Available Filter Values
 
-#### Countries (Full Names)
-The API supports filtering by full country names. Sample data includes:
-
-**English-speaking countries:**
-- United States, United Kingdom, Canada, Australia, New Zealand
-
-**European countries:**
-- Germany, France, Italy, Spain, Netherlands, Sweden, Norway, Denmark, Finland
-- Belgium, Austria, Switzerland, Ireland, Portugal, Poland, Czech Republic, Greece, Hungary
-
 #### Activities (Economic Sectors)
+
 - Transportation
 - Agriculture
 - Energy Production
@@ -177,6 +205,7 @@ The API supports filtering by full country names. Sample data includes:
 - Fuel Combustion
 
 #### Emission Types
+
 - CO2 (Carbon Dioxide)
 - CH4 (Methane)
 - N2O (Nitrous Oxide)
@@ -193,12 +222,8 @@ The project includes comprehensive tests covering all layers of the DDD architec
 ```bash
 # Run all tests
 pytest
-
-# Run all tests with verbose output
-pytest -v
-
-# Run all tests with detailed output
-pytest -vv
+# without coverage
+pytest --no-cov
 ```
 
 #### Run Specific Test Classes or Methods
@@ -209,28 +234,40 @@ pytest -vv
 pytest emissions/tests/test_api.py
 
 # Run tests matching a pattern
-pytest -k "TestEmissionQueryParamSerializer" -v --no-cov
-
+pytest -k "TestEmissionAPI" -v --no-cov
 ```
 
 ### Test Coverage
 
 The test suite covers:
 
-- **Domain Layer**: Value Objects, Entities, and business rules
-- **Application Layer**: Use cases and service orchestration
-- **Infrastructure Layer**: Repository implementations and data access
-- **Presentation Layer**: API endpoints, serialization, and filtering
-
-<!-- #### Generate Coverage Report
-
-```bash
-# Generate HTML coverage report
-pytest --cov=emissions --cov-report=html
-
-# View coverage report
-open htmlcov/index.html  # macOS
-xdg-open htmlcov/index.html  # Linux -->
+```
+---------- coverage: platform linux, python 3.10.12-final-0 ----------
+Name                                            Stmts   Miss  Cover   Missing
+-----------------------------------------------------------------------------
+emissions/__init__.py                               0      0   100%
+emissions/app/__init__.py                           0      0   100%
+emissions/app/service.py                           21      2    90%   17, 21
+emissions/apps.py                                   4      0   100%
+emissions/domain/emission.py                       12      0   100%
+emissions/domain/repository.py                     13      3    77%   13, 17, 27
+emissions/helpers/__init__.py                       0      0   100%
+emissions/helpers/query_parser.py                   7      0   100%
+emissions/helpers/validators.py                    13      2    85%   23, 29
+emissions/infrastructure/__init__.py                0      0   100%
+emissions/infrastructure/django_repository.py      31      4    87%   17-18, 21-22
+emissions/migrations/0001_initial.py                5      0   100%
+emissions/migrations/__init__.py                    0      0   100%
+emissions/models.py                                10      1    90%   13
+emissions/serializers.py                           12      0   100%
+emissions/tests/__init__.py                         0      0   100%
+emissions/tests/conftest.py                        18      1    94%   51
+emissions/tests/test_api.py                        46      0   100%
+emissions/tests/test_helpers.py                    15      0   100%
+emissions/views.py                                 29      2    93%   52-53
+-----------------------------------------------------------------------------
+TOTAL                                             236     15    94%
+Coverage HTML written to dir htmlcov
 ```
 
 ### Test Structure
@@ -239,51 +276,54 @@ xdg-open htmlcov/index.html  # Linux -->
 emissions/tests/
 ├── conftest.py          # Shared fixtures and helpers
 ├── test_api.py          # API endpoint tests
+└── test_helpers.py      # Helper utilities tests
 ```
-<!-- ├── test_serializers.py  # Serializer validation tests
-└── test_helpers.py      # Helper function tests -->
+
+### Run Tests with Coverage
+
+```bash
+# Run tests with coverage report
+pytest --cov=emissions --cov-report=html
+
+# View coverage report
+open htmlcov/index.html  # macOS
+xdg-open htmlcov/index.html  # Linux
+```
 
 ## Architecture
 
-This API follows **Domain-Driven Design (DDD)** principles with clean architecture:
+This API follows **Domain-Driven Design (DDD)** principles with clean architecture and optimized database-level filtering:
 
 ```
 📁 emissions/
-├── 📁 domain/           # Domain Layer
-│   ├── emission.py      # Domain Entity
-│   └── repository.py    # Repository Interface
-├── 📁 app/             # Application Layer
-│   └── service.py      # Application Services
-├── 📁 infrastructure/  # Infrastructure Layer
-│   └── django_emission_repository.py  # Repository Implementation
-├── 📁 value_objects.py # Domain Value Objects
-├── 📁 serializers.py   # Presentation Serializers
-├── 📁 views.py         # API Controllers
-├── 📁 helpers.py       # Filtering Logic
-└── 📁 tests.py         # Comprehensive Tests
+├── 📁 domain/
+│   ├── emission.py
+│   └── repository.py
+├── 📁 app/
+│   └── service.py
+├── 📁 infrastructure/
+│   └── django_repository.py
+├── 📁 helpers/
+│   ├── query_parser.py
+│   └── validators.py
+├── 📁 tests/
+│   ├── conftest.py
+│   ├── test_api.py
+│   └── test_helpers.py
+├── models.py
+├── serializers.py
+└── views.py
 ```
 
-### Key Design Patterns
+### Data Flow
 
-- **Repository Pattern**: Abstract data access
-- **Value Objects**: Immutable domain objects
-- **Application Services**: Use case orchestration
-- **Clean Architecture**: Dependency inversion
-
-## Data Model
-
-### Emission Entity
-
-| Field | Type | Description |
-|-------|------|-------------|
-| id | Integer | Primary key |
-| year | Integer | Year of emission |
-| emissions | Decimal | Emission amount (tons) |
-| emission_type | String | Type of greenhouse gas |
-| country | String | Country name (full name) |
-| activity | String | Economic activity sector |
-| created_at | DateTime | Record creation timestamp |
-
+```
+Request → ViewSet → Application Service → Repository → Database (ORM)
+                ↓
+         Query Parser (helpers)
+                ↓
+         Validators (helpers)
+```
 
 ### Supported Emission Types
 
