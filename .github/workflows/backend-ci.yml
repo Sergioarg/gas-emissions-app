@@ -11,7 +11,7 @@ on:
       - '**/Dockerfile'
       - '**/.gitignore'
   pull_request:
-    branches: ["main"]
+    branches: ["main", "dev"]
     paths-ignore:
       - '**.md'
       - 'frontend/**'
