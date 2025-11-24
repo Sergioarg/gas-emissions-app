@@ -1,7 +1,7 @@
 export interface Emission {
     year: number;
     emissions: number;
-    emission_type: string; // considerar enum de tipos de emisiones
+    emission_type: string;
     country: string;
     activity: string;
   }
