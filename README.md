@@ -155,16 +155,10 @@ Workflow Location:  `.github/workflows/backend-ci.yml`
 
 ## 🔒 Security Notes
 
+This is a technical test project. For production deployment, consider:
 - **SQLite3** is used for development/testing only
 - **Production** should use PostgreSQL or another production-grade database
 - **API Key authentication** should be implemented for production
 - **SECRET_KEY** must be set via environment variables (never commit to repository)
----
-
-### Notes:
-This is a technical test project. For production deployment, consider:
-- Using a production database (PostgreSQL)
-- Implementing API key authentication
-- Setting up proper logging and monitoring
-- Using a production WSGI server (Gunicorn, uWSGI)
 - Configuring HTTPS and security headers
+---
