@@ -2,15 +2,8 @@
 
 ## Overview
 
-This documentation outlines how to set up and use the Gas Emissions API, a Django backend designed for secure and efficient management of greenhouse gas emissions data. The API follows Domain-Driven Design (DDD) principles and provides comprehensive filtering capabilities.
-
-## API Endpoints
-
-The API provides read-only access to emissions data with advanced filtering capabilities:
-
-### Emissions Management
-
-- **List Emissions**: `GET /api/emissions/` - Retrieve emissions with optional filtering
+This documentation outlines how to set up and use the Gas Emissions API, a Django backend designed for secure and efficient management of greenhouse gas emissions data.
+The API follows Domain-Driven Design (DDD) principles and provides comprehensive filtering capabilities.
 
 ## Getting Started
 
@@ -68,7 +61,7 @@ pip install -r requirements.txt
    Or use the provided `.envrc` file (requires `direnv`):
 
    ```bash
-   direnv allow
+   direnv allow && source .envrc
    ```
 
 7. Apply migrations to set up the database:
@@ -97,38 +90,6 @@ The server will start at `http://localhost:8000`.
 
 ## API Endpoints
 
-### Usage
-
-To interact with the API, you can use tools like `curl`, Postman, or any HTTP client library in your preferred programming language.
-
-### Emissions Endpoint
-
-**Base URL**: `http://127.0.0.1:8000/api/emissions/`
-
-#### List Emissions with Filtering
-
-- **Endpoint**: `/api/emissions/`
-- **Method**: `GET`
-- **Description**: Retrieve emissions data with optional filtering. Filters are applied at the database level for optimal performance.
-- **Query Parameters**:
-  - `country` (string, optional): Filter by country name. Supports single value or comma-separated values (e.g., "Japan" or "Japan,Canada"). Case-insensitive partial match.
-  - `activity` (string, optional): Filter by activity type. Supports single value or comma-separated values (e.g., "Transportation" or "Transportation,Agriculture"). Case-insensitive partial match.
-  - `emission_type` (string, optional): Filter by emission type. Supports single value or comma-separated values (e.g., "CO2" or "CO2,CH4"). Exact match.
-- **Response**: Array of emission objects
-- **Performance**: All filtering is performed at the database level using Django ORM for optimal performance and scalability.
-- **Example Response**:
-  ```json
-  [
-    {
-      "year": 2016,
-      "emissions": 2.9,
-      "emission_type": "N2O",
-      "country": "United Kingdom",
-      "activity": "Waste"
-    }
-  ]
-  ```
-
 ## Accessing the API Endpoints
 
 Once the application is running, you can access the API endpoints using a web browser or a tool like `curl` or Postman.
@@ -143,7 +104,8 @@ The collection includes:
 
 - **Get Emissions** request with multiple example responses:
   - **Get All Emissions**: Example response for retrieving all emissions
-  - **By Country**: Example response for filtering by country (e.g., `?country=Japan`)
+- **Optional Filter**:
+  - **By Country**: Example response for filtering by country (e.g., `?country=Japan,Canada`)
   - **By Waste**: Example response for filtering by activity (e.g., `?activity=Waste`)
   - **By Emission Type**: Example response for filtering by emission type with multiple values (e.g., `?emission_type=N2O,CH4`)
 
@@ -177,12 +139,6 @@ All endpoints return data in the following format:
   }
 ]
 ```
-
-#### Combining Filters
-
-Multiple filters are combined with AND logic:
-
-- `?country=Japan&activity=Transportation` returns emissions where country contains "Japan" AND activity contains "Transportation"
 
 #### Validation Rules
 
@@ -270,15 +226,6 @@ TOTAL                                             236     15    94%
 Coverage HTML written to dir htmlcov
 ```
 
-### Test Structure
-
-```
-emissions/tests/
-├── conftest.py          # Shared fixtures and helpers
-├── test_api.py          # API endpoint tests
-└── test_helpers.py      # Helper utilities tests
-```
-
 ### Run Tests with Coverage
 
 ```bash
@@ -290,9 +237,7 @@ open htmlcov/index.html  # macOS
 xdg-open htmlcov/index.html  # Linux
 ```
 
-## Architecture
-
-This API follows **Domain-Driven Design (DDD)** principles with clean architecture and optimized database-level filtering:
+## Django App Emissions Files
 
 ```
 📁 emissions/
