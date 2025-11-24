@@ -9,5 +9,5 @@ import { EmissionsChartComponent } from './presentation/emissions-chart/emission
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('Gas Emissions Dashboard');
+  protected readonly title = signal('Gas Emissions Dashboard - Technical Test');
 }
