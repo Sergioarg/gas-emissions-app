@@ -11,7 +11,13 @@ up-build: ## up-build
 down: ## down
 	docker compose down
 
-re-build: ## re-build
+rebuild: ## rebuild
 	docker compose down
 	docker compose build
 	docker compose up -d
+
+attach-backend: ## attach-backend
+	docker attach backend
+
+attach-frontend: ## attach-frontend
+	docker attach frontend
