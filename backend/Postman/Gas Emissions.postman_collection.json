@@ -1,0 +1,281 @@
+{
+	"info": {
+		"_postman_id": "32f0ec68-dc21-493f-8789-73a0bf7816f9",
+		"name": "Gas Emissions",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20835506"
+	},
+	"item": [
+		{
+			"name": "Get Emissions",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{localhost}}/api/emissions/?country=Japan",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"api",
+						"emissions",
+						""
+					],
+					"query": [
+						{
+							"key": "emission_type",
+							"value": "N2O,CH4",
+							"disabled": true
+						},
+						{
+							"key": "country",
+							"value": "Japan"
+						},
+						{
+							"key": "activity",
+							"value": "waste",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get All Emissions",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{localhost}}/api/emissions/",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"emissions",
+								""
+							]
+						}
+					},
+					"_postman_previewlanguage": "",
+					"header": [],
+					"cookie": [
+						{
+							"expires": "Invalid Date",
+							"domain": "",
+							"path": ""
+						}
+					],
+					"body": "[\r\n    {\r\n        \"year\": 2016,\r\n        \"emissions\": 2.9,\r\n        \"emission_type\": \"N2O\",\r\n        \"country\": \"United Kingdom\",\r\n        \"activity\": \"Waste\"\r\n    },\r\n    {\r\n        \"year\": 2017,\r\n        \"emissions\": 12.8,\r\n        \"emission_type\": \"CH4\",\r\n        \"country\": \"Canada\",\r\n        \"activity\": \"Agriculture\"\r\n    },\r\n]"
+				},
+				{
+					"name": "By Country",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{localhost}}/api/emissions/?country=Japan",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"emissions",
+								""
+							],
+							"query": [
+								{
+									"key": "emission_type",
+									"value": "N2O,CH4",
+									"disabled": true
+								},
+								{
+									"key": "country",
+									"value": "Japan"
+								},
+								{
+									"key": "activity",
+									"value": "waste",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "[\r\n    {\r\n        \"year\": 2017,\r\n        \"emissions\": 3.2,\r\n        \"emission_type\": \"SF6\",\r\n        \"country\": \"Japan\",\r\n        \"activity\": \"Industrial Processes\"\r\n    }\r\n]"
+				},
+				{
+					"name": "By Waste",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{localhost}}/api/emissions/?activity=Waste",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"emissions",
+								""
+							],
+							"query": [
+								{
+									"key": "emission_type",
+									"value": "N2O,CH4",
+									"disabled": true
+								},
+								{
+									"key": "country",
+									"value": "Japan",
+									"disabled": true
+								},
+								{
+									"key": "activity",
+									"value": "Waste"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": "",
+					"header": [],
+					"cookie": [
+						{
+							"expires": "Invalid Date",
+							"domain": "",
+							"path": ""
+						}
+					],
+					"body": "[\r\n    {\r\n        \"year\": 2016,\r\n        \"emissions\": 2.9,\r\n        \"emission_type\": \"N2O\",\r\n        \"country\": \"United Kingdom\",\r\n        \"activity\": \"Waste\"\r\n    },\r\n    {\r\n        \"year\": 2018,\r\n        \"emissions\": 9.4,\r\n        \"emission_type\": \"N2O\",\r\n        \"country\": \"Netherlands\",\r\n        \"activity\": \"Waste\"\r\n    },\r\n    {\r\n        \"year\": 2016,\r\n        \"emissions\": 18.3,\r\n        \"emission_type\": \"CH4\",\r\n        \"country\": \"Finland\",\r\n        \"activity\": \"Waste\"\r\n    },\r\n    {\r\n        \"year\": 2019,\r\n        \"emissions\": 13.8,\r\n        \"emission_type\": \"N2O\",\r\n        \"country\": \"Portugal\",\r\n        \"activity\": \"Waste\"\r\n    },\r\n    {\r\n        \"year\": 2018,\r\n        \"emissions\": 9.1,\r\n        \"emission_type\": \"N2O\",\r\n        \"country\": \"New Zealand\",\r\n        \"activity\": \"Waste\"\r\n    }\r\n]"
+				},
+				{
+					"name": "By Emission Type",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{localhost}}/api/emissions/?emission_type=N2O,CH4",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"emissions",
+								""
+							],
+							"query": [
+								{
+									"key": "emission_type",
+									"value": "N2O,CH4"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "[\r\n    {\r\n        \"year\": 2016,\r\n        \"emissions\": 2.9,\r\n        \"emission_type\": \"N2O\",\r\n        \"country\": \"United Kingdom\",\r\n        \"activity\": \"Waste\"\r\n    },\r\n    {\r\n        \"year\": 2017,\r\n        \"emissions\": 12.8,\r\n        \"emission_type\": \"CH4\",\r\n        \"country\": \"Canada\",\r\n        \"activity\": \"Agriculture\"\r\n    },\r\n    {\r\n        \"year\": 2016,\r\n        \"emissions\": 8.5,\r\n        \"emission_type\": \"N2O\",\r\n        \"country\": \"Australia\",\r\n        \"activity\": \"Industrial Processes\"\r\n    },\r\n]"
+				},
+				{
+					"name": "By Multiple Params",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{localhost}}/api/emissions/?emission_type=N2O,CH4&activity=Waste",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"emissions",
+								""
+							],
+							"query": [
+								{
+									"key": "emission_type",
+									"value": "N2O,CH4"
+								},
+								{
+									"key": "activity",
+									"value": "Waste"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": "",
+					"header": [],
+					"cookie": [
+						{
+							"expires": "Invalid Date",
+							"domain": "",
+							"path": ""
+						}
+					],
+					"body": "[\r\n    {\r\n        \"year\": 2016,\r\n        \"emissions\": 2.9,\r\n        \"emission_type\": \"N2O\",\r\n        \"country\": \"United Kingdom\",\r\n        \"activity\": \"Waste\"\r\n    },\r\n    {\r\n        \"year\": 2018,\r\n        \"emissions\": 9.4,\r\n        \"emission_type\": \"N2O\",\r\n        \"country\": \"Netherlands\",\r\n        \"activity\": \"Waste\"\r\n    },\r\n    {\r\n        \"year\": 2016,\r\n        \"emissions\": 18.3,\r\n        \"emission_type\": \"CH4\",\r\n        \"country\": \"Finland\",\r\n        \"activity\": \"Waste\"\r\n    },\r\n    {\r\n        \"year\": 2019,\r\n        \"emissions\": 13.8,\r\n        \"emission_type\": \"N2O\",\r\n        \"country\": \"Portugal\",\r\n        \"activity\": \"Waste\"\r\n    },\r\n    {\r\n        \"year\": 2018,\r\n        \"emissions\": 9.1,\r\n        \"emission_type\": \"N2O\",\r\n        \"country\": \"New Zealand\",\r\n        \"activity\": \"Waste\"\r\n    }\r\n]"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "localhost",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+}

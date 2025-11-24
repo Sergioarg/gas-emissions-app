@@ -11,4 +11,4 @@ class Emission:
     emission_type: str
     country: str
     activity: str
-    created_at: datetime
+    created_at: Optional[datetime]

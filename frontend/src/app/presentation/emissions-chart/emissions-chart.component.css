@@ -8,7 +8,6 @@
   min-height: 500px;
 }
 
-/* Estilos para la sección de filtros con Material */
 .filters-section {
   width: 100%;
   max-width: 1200px;
@@ -91,7 +90,6 @@
   color: #1976d2;
 }
 
-/* Estilos para las líneas del gráfico */
 .line {
   transition: opacity 0.3s;
 }
@@ -109,7 +107,6 @@
   r: 6;
 }
 
-/* Estilos para el tooltip */
 :host ::ng-deep .emissions-tooltip {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.5;

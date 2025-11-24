@@ -35,12 +35,9 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
   private height = 400;
   private emissionsData: Emission[] | null = null;
 
-  // Filtros
   public selectedCountry: string | null = null;
   public selectedActivity: string | null = null;
   public selectedEmissionType: string | null = null;
-  
-  // Opciones disponibles para los filtros
   public availableCountries: string[] = [];
   public availableActivities: string[] = [];
   public availableEmissionTypes: string[] = [];
@@ -52,13 +49,10 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
   ) {}
 
   ngOnInit(): void {
-    // Cargar datos iniciales para obtener opciones de filtros
     this.loadEmissions();
   }
 
   ngAfterViewInit(): void {
-    // El contenedor ahora siempre está en el DOM (oculto cuando loading)
-    // Intentar inicializar después de un pequeño delay
     setTimeout(() => {
       if (this.chartContainer?.nativeElement && !this.loading) {
         this.initChart();
@@ -70,25 +64,20 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngOnDestroy(): void {
-    // Limpiar tooltip al destruir el componente
     d3.select('.emissions-tooltip').remove();
     this.destroy$.next();
     this.destroy$.complete();
   }
 
   private initChart(): void {
-    // Reintentar si el contenedor no está disponible
     if (!this.chartContainer?.nativeElement) {
-      console.warn('⚠️ chartContainer no está disponible, reintentando...');
       setTimeout(() => this.initChart(), 100);
       return;
     }
 
     const element = this.chartContainer.nativeElement;
 
-    // Verificar que el elemento tenga dimensiones
     if (element.offsetWidth === 0) {
-      console.warn('⚠️ El contenedor no tiene ancho, esperando...');
       setTimeout(() => this.initChart(), 100);
       return;
     }
@@ -97,20 +86,14 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
     this.width = Math.max(containerWidth - this.margin.left - this.margin.right, 600);
     this.height = 400 - this.margin.top - this.margin.bottom;
 
-    console.log('📐 Inicializando gráfico:', { width: this.width, height: this.height, containerWidth });
-
-    // Limpiar cualquier SVG anterior
     d3.select(element).select('svg').remove();
 
-    // Crear SVG
     this.svg = d3.select(element)
       .append('svg')
       .attr('width', this.width + this.margin.left + this.margin.right)
       .attr('height', this.height + this.margin.top + this.margin.bottom)
       .append('g')
       .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
-
-    console.log('✅ SVG inicializado correctamente');
   }
 
   private loadEmissions(): void {
@@ -126,31 +109,23 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (emissions: Emission[]) => {
-          console.log('📊 Datos recibidos para el gráfico:', emissions.length, 'registros');
           this.emissionsData = emissions;
 
-          // Actualizar opciones de filtros si es la primera carga
           if (this.availableCountries.length === 0) {
             this.updateFilterOptions(emissions);
           }
 
-          // Usar setTimeout para evitar el error de detección de cambios
           setTimeout(() => {
             this.loading = false;
             this.cdr.detectChanges();
             
-            // Esperar a que el DOM se actualice y el contenedor esté disponible
             setTimeout(() => {
-              // Asegurar que el contenedor esté disponible
               if (this.chartContainer?.nativeElement) {
                 if (!this.svg) {
                   this.initChart();
                 }
-                // Procesar datos después de inicializar el gráfico
                 this.processData(emissions);
               } else {
-                console.warn('⚠️ Contenedor no disponible después de cargar datos');
-                // Reintentar
                 setTimeout(() => {
                   if (this.chartContainer?.nativeElement) {
                     if (!this.svg) {
@@ -164,9 +139,8 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
           }, 0);
         },
         error: (err) => {
-          console.error('❌ Error al cargar emisiones:', err);
           setTimeout(() => {
-            this.error = 'Error al cargar los datos de emisiones';
+            this.error = 'Error loading emissions data';
             this.loading = false;
             this.cdr.detectChanges();
           }, 0);
@@ -204,29 +178,18 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
 
   private processData(emissions: Emission[]): void {
     if (!emissions || emissions.length === 0) {
-      console.warn('⚠️ No hay datos para procesar');
-      this.error = 'No hay datos disponibles';
+      this.error = 'No data available';
       return;
     }
 
-    // Esperar a que el SVG esté inicializado (con reintentos)
     if (!this.svg) {
-      console.log('⏳ Esperando a que el SVG se inicialice...');
       setTimeout(() => this.processData(emissions), 100);
       return;
     }
 
-    console.log('✅ Procesando', emissions.length, 'registros de emisiones');
-
-    // Obtener todos los años únicos y ordenarlos
     const years = Array.from(new Set(emissions.map(e => e.year))).sort((a, b) => a - b);
-    console.log('📅 Años encontrados:', years);
-
-    // Agrupar datos solo por Tipo de Emisión (más simple)
     const groupedByType = d3.group(emissions, d => d.emission_type);
-    console.log('📈 Tipos de emisión encontrados:', Array.from(groupedByType.keys()));
 
-    // Preparar datos para cada línea (una línea por tipo de emisión)
     const lineData: Array<{
       label: string;
       type: string;
@@ -237,14 +200,12 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
     }> = [];
 
     groupedByType.forEach((values, type) => {
-      // Crear un mapa de año -> emisiones totales para este tipo
       const yearMap = new Map<number, number>();
       values.forEach(e => {
         const current = yearMap.get(e.year) || 0;
         yearMap.set(e.year, current + e.emissions);
       });
 
-      // Crear array de valores ordenados por año
       const valuesArray = years.map(year => ({
         year,
         emissions: yearMap.get(year) || 0
@@ -257,7 +218,6 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
       });
     });
 
-    console.log('🎨 Dibujando gráfico con', lineData.length, 'líneas');
     this.drawChart(lineData, years);
   }
 
@@ -273,24 +233,18 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
     years: number[]
   ): void {
     if (!this.svg) {
-      console.warn('⚠️ SVG no está inicializado aún');
       return;
     }
 
     if (!lineData || lineData.length === 0) {
-      console.warn('⚠️ No hay datos para dibujar');
       return;
     }
 
-    console.log('🎨 Iniciando dibujo del gráfico...');
-
-    // Limpiar el gráfico anterior y tooltips
     this.svg.selectAll('*').remove();
     if (isPlatformBrowser(this.platformId)) {
       d3.select('.emissions-tooltip').remove();
     }
 
-    // Escalas - usar escala lineal para años
     const xScale = d3.scaleLinear()
       .domain(d3.extent(years) as [number, number])
       .range([0, this.width]);
@@ -300,16 +254,13 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
       .domain([0, maxEmissions * 1.1])
       .range([this.height, 0]);
 
-    // Colores para cada tipo de emisión
     const colors = d3.scaleOrdinal(d3.schemeCategory10);
 
-    // Línea generadora - usa años en el eje X
     const line = d3.line<{ year: number; emissions: number }>()
       .x(d => xScale(d.year))
       .y(d => yScale(d.emissions))
       .curve(d3.curveMonotoneX);
 
-    // Crear tooltip solo en el navegador
     let tooltip: any = null;
     if (isPlatformBrowser(this.platformId)) {
       tooltip = d3.select('body')
@@ -326,9 +277,7 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
         .style('z-index', '1000');
     }
 
-    // Dibujar líneas
     lineData.forEach((data, index) => {
-      // Solo dibujar líneas para puntos con emisiones > 0
       const validValues = data.values.filter(d => d.emissions > 0);
 
       if (validValues.length > 0) {
@@ -341,7 +290,6 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
           .attr('class', `line line-${index}`)
           .style('opacity', 0.9);
 
-        // Agregar puntos con tooltips solo para valores válidos
         this.svg.selectAll(`.dot-${index}`)
           .data(validValues)
           .enter()
@@ -358,9 +306,9 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
             d3.select(this).attr('r', 8);
 
             if (tooltip) {
-              let tooltipContent = `<strong>Tipo: ${data.type}</strong><br/>`;
-              tooltipContent += `Año: ${d.year}<br/>`;
-              tooltipContent += `Emisiones: ${d.emissions.toFixed(2)} tons`;
+              let tooltipContent = `<strong>Type: ${data.type}</strong><br/>`;
+              tooltipContent += `Year: ${d.year}<br/>`;
+              tooltipContent += `Emissions: ${d.emissions.toFixed(2)} tons`;
 
               tooltip
                 .html(tooltipContent)
@@ -378,9 +326,8 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
       }
     });
 
-    // Ejes
     const xAxis = d3.axisBottom(xScale)
-      .tickValues(years) // Asegurar que solo muestre los años que existen
+      .tickValues(years)
       .tickFormat(d => d3.format('d')(d as number));
 
     const yAxis = d3.axisLeft(yScale)
@@ -401,7 +348,7 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
       .attr('fill', 'currentColor')
       .style('text-anchor', 'middle')
       .style('font-size', '14px')
-      .text('Año');
+      .text('Year');
 
     this.svg.append('g')
       .call(yAxis)
@@ -412,9 +359,8 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
       .attr('fill', 'currentColor')
       .style('text-anchor', 'middle')
       .style('font-size', '14px')
-      .text('Emisiones (tons)');
+      .text('Emissions (tons)');
 
-    // Título
     this.svg.append('text')
       .attr('x', this.width / 2)
       .attr('y', -10)
@@ -422,8 +368,6 @@ export class EmissionsChartComponent implements OnInit, AfterViewInit, OnDestroy
       .style('text-anchor', 'middle')
       .style('font-size', '18px')
       .style('font-weight', 'bold')
-      .text('Emisiones de Gases de Efecto Invernadero por Año');
-
-    console.log('✅ Gráfico dibujado correctamente');
+      .text('Greenhouse Gas Emissions by Year');
   }
 }
