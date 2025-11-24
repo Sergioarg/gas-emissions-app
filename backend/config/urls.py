@@ -1,6 +1,7 @@
-from rest_framework.routers import DefaultRouter
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
+
 from emissions.views import EmissionViewSet
 
 # REST API
@@ -11,5 +12,4 @@ router.register(r'api/emissions', EmissionViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('admin/', admin.site.urls),
-    # path('api/token-auth/', obtain_auth_token, name='api-token-auth'),
 ]

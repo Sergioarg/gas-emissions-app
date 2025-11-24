@@ -4,9 +4,9 @@ from typing import List
 # Django
 from django.db.models import Q
 
+from emissions.domain.emission import Emission
 # Internal
 from emissions.domain.repository import EmissionRepositoryInterface
-from emissions.domain.emission import Emission
 from emissions.models import Emission as DjangoEmission
 
 
