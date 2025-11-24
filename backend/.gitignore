@@ -1,0 +1,19 @@
+# SQLite database
+*.sqlite3
+# Venv
+.venv
+# Pytest cache and pycache
+__pycache__/
+.pytest_cache/
+
+# Django
+db.sqlite3
+
+# Environment files
+.env
+.env.local
+.envrc
+
+# Coverage
+htmlcov/
+.coverage

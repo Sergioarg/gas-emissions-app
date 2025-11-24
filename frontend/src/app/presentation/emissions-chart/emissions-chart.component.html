@@ -1,0 +1,71 @@
+<div class="chart-wrapper">
+    <mat-card class="filters-section">
+      <mat-card-header>
+        <mat-card-title>Filters</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="filter-group">
+          <label class="filter-label">Country</label>
+          <mat-chip-set>
+            <mat-chip-option
+              *ngFor="let country of availableCountries"
+              [selected]="selectedCountry === country"
+              (click)="filterByCountry(country)">
+              {{ country }}
+            </mat-chip-option>
+          </mat-chip-set>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Activity</label>
+          <mat-chip-set>
+            <mat-chip-option
+              *ngFor="let activity of availableActivities"
+              [selected]="selectedActivity === activity"
+              (click)="filterByActivity(activity)">
+              {{ activity }}
+            </mat-chip-option>
+          </mat-chip-set>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Emission Type</label>
+          <mat-chip-set>
+            <mat-chip-option
+              *ngFor="let emissionType of availableEmissionTypes"
+              [selected]="selectedEmissionType === emissionType"
+              (click)="filterByEmissionType(emissionType)">
+              {{ emissionType }}
+            </mat-chip-option>
+          </mat-chip-set>
+        </div>
+
+        <div class="clear-button-container">
+          <button
+            mat-raised-button
+            color="warn"
+            (click)="clearFilters()"
+            [disabled]="!selectedCountry && !selectedActivity && !selectedEmissionType">
+            Clear Filters
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading emissions data...</p>
+    </div>
+
+    <mat-card *ngIf="error && !loading" class="error-card">
+      <mat-card-content>
+        <p>Error loading emissions data: {{ error }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="chart-card" [style.display]="loading || error ? 'none' : 'block'">
+      <mat-card-content>
+        <div #chartContainer class="chart"></div>
+      </mat-card-content>
+    </mat-card>
+  </div>

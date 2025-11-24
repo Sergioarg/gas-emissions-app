@@ -1,0 +1,122 @@
+.chart-wrapper {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 500px;
+}
+
+.filters-section {
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 30px;
+}
+
+.filter-group {
+  margin-bottom: 24px;
+}
+
+.filter-label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.clear-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  gap: 20px;
+}
+
+.error-card {
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 20px;
+}
+
+.chart-card {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.chart-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.chart {
+  width: 100%;
+  min-width: 800px;
+  min-height: 400px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+}
+
+.error {
+  color: #d32f2f;
+  background-color: #ffebee;
+  border: 1px solid #d32f2f;
+  border-radius: 4px;
+}
+
+.loading {
+  color: #1976d2;
+}
+
+.line {
+  transition: opacity 0.3s;
+}
+
+.line:hover {
+  opacity: 0.7;
+}
+
+.dot {
+  cursor: pointer;
+  transition: r 0.2s;
+}
+
+.dot:hover {
+  r: 6;
+}
+
+:host ::ng-deep .emissions-tooltip {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+:host ::ng-deep .emissions-tooltip strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 5px;
+}
