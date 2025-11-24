@@ -62,7 +62,7 @@ jobs:
           DEBUG: 'False'
         run: |
           export SECRET_KEY="${SECRET_KEY:-django-insecure-test-key-for-ci-only}"
-          pytest emissions/tests/ -v --no-cov
+          pytest emissions/tests/ -v --cov=emissions --cov-report=xml
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
