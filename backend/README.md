@@ -54,6 +54,11 @@ pip install -r requirements.txt
    Create a `.envrc` file or set environment variables:
 
    ```bash
+    cd backend/ && touch .envrc
+
+   ```
+
+   ```bash
    export SECRET_KEY='your-secret-key-here'
    export DEBUG='True'  # Use 'False' for production
    ```
